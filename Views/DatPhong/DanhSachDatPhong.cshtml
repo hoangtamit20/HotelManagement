@@ -1,0 +1,276 @@
+@model List<PhongModel>;
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="~/css/card.css">
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+<form asp-action="DanhSachDatPhong" method="post">
+    @if (ViewBag.ShowErrorMessage != null)
+    {
+        <div class="alert alert-danger d-flex justify-content-center errormessage" role="alert">
+            @ViewBag.ShowErrorMessage
+        </div>
+    }
+
+    @if (@ViewBag.phanQuyenErrorMessage != null)
+    {
+        <div class="alert alert-danger d-flex justify-content-center errormessage" role="alert">
+            @ViewBag.phanQuyenErrorMessage
+        </div>
+    }
+    <div class="row mt-5">
+        <div class="col-md-2"></div>
+        <div class="col-md-8 d-flex justify-content-between">
+            <div class="">
+                <p class="mb-1">Ngày đặt phòng : </p>
+                <input class="form-control" type="datetime-local" name="ngayDatPhong"
+                    min='@(DateTime.Now.ToString("yyyy-MM-ddTHH:mm"))'
+                    value='@(ViewBag.NgayDatPhongData == null ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm") : ViewBag.NgayDatPhongData.ToString("yyyy-MM-ddTHH:mm"))'>
+                <span class="text-danger">@ViewBag.NgayDatPhongError</span>
+            </div>
+            <div class="">
+                <p class="mb-1">Ngày trả phòng : </p>
+                <input class="form-control" type="datetime-local" name="ngayTraPhong"
+                    min='@(DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:mm"))'
+                    value='@(ViewBag.NgayKetThucData == null ? DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:mm") : ViewBag.NgayKetThucData.ToString("yyyy-MM-ddTHH:mm"))'>
+                <span class="text-danger">@ViewBag.NgayTraPhongError</span>
+            </div>
+            <div class="">
+                <p class="mb-1">Loại phòng</p>
+                <select name="MaLp" class="form-select" asp-items="ViewBag.MaLp"></select>
+            </div>
+            <div>
+                <p class="mb-4"></p>
+                <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</form>
+
+@if (Model == null || Model.Count < 1)
+{
+    <p class="d-flex justify-content-center text-danger">Không còn phòng trống!</p>
+}
+else
+{
+    <h3 class="mt-5 mb-2">Danh sách phòng trống</h3>
+    <hr />
+    <h6 class="text-primary">Phòng đơn</h6>
+    <div class="row row-cols-1 row-cols-xs-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 px-4">
+        @foreach (var item in Model)
+        {
+            if (item.MaLp == 1)
+            {
+                <div class="card mb-3">
+                    <p></p>
+                    <div class="sub-card p-3 bg-light rounded ">
+                        <div class="card-header p-0 m-0">
+                            <h5 class="card-title">@(item.SoPhong)</h5>
+                        </div>
+                        <div class="card-body p-0 mt-2">
+                            <div class="widget-49">
+                                <div class="widget-49-title-wrapper">
+                                    <div class="widget-49-date-primary">
+                                        <img class="widget-49-date-day rounded-circle w-100 h-100" src="~/Images/Phong/phongdon.jpg"
+                                            alt="">
+                                    </div>
+                                    <div class="widget-49-meeting-info">
+                                        <h5 class="">Phòng trống</h5>
+                                        <span class="widget-49-meeting-time">12:00 to 13.30 Hrs</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2 px-3 pb-0">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-bed"
+                                                style="margin-right: 10px; color: #B4A79E;"></i><span>1 giường đơn</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-earth-asia"
+                                                style="margin-right: 12px; color: #B4A79E;"></i><span>Diện tích : 21 m²</span></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-person-swimming"
+                                                style="margin-right: 10px; color: #6b74d3;"></i><span>Bể bơi chung</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-wifi"
+                                                style="margin-right: 10px; color: #0a3ce4;"></i><span>Wifi miễn phí</span></li>
+                                    </ul>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <div>Giá phòng : <strong>@(String.Format("{0:#,#}", item.MaLpNavigation.DonGia)) VNĐ</strong>
+                                    </div>
+                                    @Html.ActionLink("Đặt phòng", "GetDataPhong", "DatPhong", new {MaP = item.MaP}, new {target =
+                        "_blank",@class="btn btn-sm rounded", @style = "background-color: rgb(85, 199, 254)"})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p></p>
+                </div>
+            }
+        }
+    </div>
+    <hr />
+    <h6 class="text-primary">Phòng đôi</h6>
+    <div class="row row-cols-1 row-cols-xs-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 px-4">
+        @foreach (var item in Model)
+        {
+            if (item.MaLp == 2)
+            {
+                <div class="card mb-3">
+                    <p></p>
+                    <div class="sub-card p-3 rounded" style="background-color: #dfdcdc;">
+                        <div class="card-header p-0 m-0">
+                            <h5 class="card-title">@(item.SoPhong)</h5>
+                        </div>
+                        <div class="card-body p-0 mt-2">
+                            <div class="widget-49">
+                                <div class="widget-49-title-wrapper">
+                                    <div class="widget-49-date-primary">
+                                        <img class="widget-49-date-day rounded-circle w-100 h-100" src="~/Images/Phong/phongdoi.jpg"
+                                            alt="">
+                                    </div>
+                                    <div class="widget-49-meeting-info">
+                                        <h5 class="">Phòng trống</h5>
+                                        <span class="widget-49-meeting-time">12:00 to 13.30 Hrs</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2 px-3 pb-0">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-bed"
+                                                style="margin-right: 10px; color: #B4A79E;"></i><span>1 giường đơn</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-earth-asia"
+                                                style="margin-right: 12px; color: #B4A79E;"></i><span>Diện tích : 21 m²</span></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-person-swimming"
+                                                style="margin-right: 10px; color: #6b74d3;"></i><span>Bể bơi chung</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-wifi"
+                                                style="margin-right: 10px; color: #0a3ce4;"></i><span>Wifi miễn phí</span></li>
+                                    </ul>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <div>Giá phòng : <strong>@(String.Format("{0:#,#}", item.MaLpNavigation.DonGia)) VNĐ</strong>
+                                    </div>
+                                    @Html.ActionLink("Đặt phòng", "GetDataPhong", "DatPhong", new {MaP = item.MaP}, new {target =
+                        "_blank",@class="btn btn-sm rounded", @style = "background-color: rgb(85, 199, 254)"})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p></p>
+                </div>
+            }
+        }
+    </div>
+    <hr />
+    <h6 class="text-primary">Phòng gia đình</h6>
+    <div class="row row-cols-1 row-cols-xs-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 px-4">
+        @foreach (var item in Model)
+        {
+            if (item.MaLp == 3)
+            {
+                <div class="card mb-3">
+                    <p></p>
+                    <div class="sub-card p-3 rounded" style="background-color: #B4A79E;">
+                        <div class="card-header p-0 m-0">
+                            <h5 class="card-title">@(item.SoPhong)</h5>
+                        </div>
+                        <div class="card-body p-0 mt-2">
+                            <div class="widget-49">
+                                <div class="widget-49-title-wrapper">
+                                    <div class="widget-49-date-primary">
+                                        <img class="widget-49-date-day rounded-circle w-100 h-100" src="~/Images/Phong/giadinh.jpg"
+                                            alt="">
+                                    </div>
+                                    <div class="widget-49-meeting-info">
+                                        <h5 class="">Phòng trống</h5>
+                                        <span class="widget-49-meeting-time">12:00 to 13.30 Hrs</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2 px-3 pb-0">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-bed"
+                                                style="margin-right: 10px; color: #5274e6;"></i><span>1 giường đơn</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-earth-asia"
+                                                style="margin-right: 12px; color: #4a6cdb;"></i><span>Diện tích : 21 m²</span></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-person-swimming"
+                                                style="margin-right: 10px; color: #6b74d3;"></i><span>Bể bơi chung</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-wifi"
+                                                style="margin-right: 10px; color: #0a3ce4;"></i><span>Wifi miễn phí</span></li>
+                                    </ul>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <div>Giá phòng : <strong>@(String.Format("{0:#,#}", item.MaLpNavigation.DonGia)) VNĐ</strong>
+                                    </div>
+                                    @Html.ActionLink("Đặt phòng", "GetDataPhong", "DatPhong", new {MaP = item.MaP}, new {target =
+                        "_blank",@class="btn btn-sm rounded", @style = "background-color: rgb(85, 199, 254)"})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p></p>
+                </div>
+            }
+        }
+    </div>
+    <hr />
+    <h6 class="text-primary">Phòng Vip</h6>
+    <div class="row row-cols-1 row-cols-xs-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 px-4">
+        @foreach (var item in Model)
+        {
+            if (item.MaLp == 4)
+            {
+                <div class="card mb-3">
+                    <p></p>
+                    <div class="sub-card p-3 rounded" style="background-color: #BDA18C;">
+                        <div class="card-header p-0 m-0">
+                            <h5 class="card-title">@(item.SoPhong)</h5>
+                        </div>
+                        <div class="card-body p-0 mt-2">
+                            <div class="widget-49">
+                                <div class="widget-49-title-wrapper">
+                                    <div class="widget-49-date-primary">
+                                        <img class="widget-49-date-day rounded-circle w-100 h-100" src="~/Images/Phong/vip.png"
+                                            alt="">
+                                    </div>
+                                    <div class="widget-49-meeting-info">
+                                        <h5 class="">Phòng trống</h5>
+                                        <span class="widget-49-meeting-time">12:00 to 13.30 Hrs</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2 px-3 pb-0">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-bed"
+                                                style="margin-right: 10px; color: #5274e6;"></i><span>1 giường đơn</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-earth-asia"
+                                                style="margin-right: 12px; color: #4a6cdb;"></i><span>Diện tích : 21 m²</span></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-person-swimming"
+                                                style="margin-right: 10px; color: #6b74d3;"></i><span>Bể bơi chung</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-wifi"
+                                                style="margin-right: 10px; color: #0a3ce4;"></i><span>Wifi miễn phí</span></li>
+                                    </ul>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <div>Giá phòng : <strong>@(String.Format("{0:#,#}", item.MaLpNavigation.DonGia)) VNĐ</strong>
+                                    </div>
+                                    @Html.ActionLink("Đặt phòng", "GetDataPhong", "DatPhong", new {MaP = item.MaP}, new {target =
+                        "_blank",@class="btn btn-sm rounded", @style = "background-color: rgb(85, 199, 254)"})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p></p>
+                </div>
+            }
+        }
+    </div>
+    <hr />
+}

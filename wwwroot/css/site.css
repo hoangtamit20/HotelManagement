@@ -1,0 +1,64 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+
+
+
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.wrapper.row {
+  flex-wrap: nowrap;
+  margin: 0;
+}
+
+.wrapper.row>* {
+  padding: 0;
+  text-align: left;
+}
+
+/* ----- end ----- */
+
+nav.col-md-2 {
+  /* background-color: tomato; */
+}
+
+nav.col-md-2 .TopFixedSideBar {
+  position: sticky;
+  top: 0;
+}
+
+a{
+  text-decoration: none !important;
+}
+
+
+#nav_accordion li:hover{
+  /* background-color: rgb(215, 221, 237); */
+  transition: .2s;
+  /* box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px 0px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px 0px inset; */
+}

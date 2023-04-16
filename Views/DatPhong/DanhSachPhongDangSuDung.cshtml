@@ -1,0 +1,363 @@
+@model List<DatPhongModel>;
+
+
+@* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"> *@
+<link rel="stylesheet" href="~/css/card.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+@if (Model == null || Model.Count < 1)
+{
+    <p class="d-flex justify-content-center text-danger mt-5">Hiện chưa có phòng nào được sử dụng!</p>
+}
+else
+{
+    <h3 class="mt-5 mb-2 text-center">DANH SÁCH PHÒNG ĐANG SỬ DỤNG</h3>
+    <hr />
+    <h6 class="text-primary">Phòng đơn</h6>
+    <div class="row row-cols-1 row-cols-xs-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 px-4">
+        @foreach (var item in Model)
+        {
+            if (item.MaPNavigation.MaLp == 1)
+            {
+                <div class="card mb-3">
+                    <p></p>
+                    <div class="sub-card p-3 bg-light rounded ">
+                        <div class="card-header d-flex justify-content-between p-0 m-0">
+                            <h5 class="card-title">@(item.MaPNavigation.SoPhong)</h5>
+                            <span
+                                class='text-@(item.MaPNavigation.MaLp == 1 ? "secondary" : (item.MaPNavigation.MaLp == 2 ? "info" : item.MaPNavigation.MaLp == 3 ? "primary" : "warning")) font-weight-light'>@(item.MaPNavigation.MaLpNavigation.TenLp)</span>
+                        </div>
+                        <div class="card-body p-0 mt-2">
+                            <div class="widget-49">
+                                <div class="d-flex justify-content-between">
+                                    <div class="widget-49-title-wrapper">
+                                        <div class="widget-49-date-primary">
+                                            <img class="widget-49-date-day rounded-circle w-100 h-100"
+                                                src='~/Images/KhachHang/@(item.MaKhNavigation.HinhAnh == null ? "noimage.jpg" : item.MaKhNavigation.HinhAnh)'
+                                                alt="Code by TamHoang">
+                                        </div>
+                                        <div class="widget-49-meeting-info">
+                                            <h5 class="">@(item.MaKhNavigation.HoTen)</h5>
+                                            <p class="widget-49-meeting-time">SĐT: @(item.MaKhNavigation.SoDt)</p>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <p></p>
+                                        <div class="dropdown">
+                                            <button class="btn btn-light bi bi-three-dots-vertical text-dark" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
+                                                <li>
+                                                    @Html.ActionLink("Đặt dịch vụ", "GetDataDatDichVu", "DatDichVu", new {MaDp = item.MaDp}, new {@class = "dropdown-item"})
+                                                </li>
+                                                <li>
+                                                    @Html.ActionLink("Chi tiết", "ChiTietDangKyDatPhong", "DatPhong", new {MaDp = item.MaDp}, new {@class = "dropdown-item"})
+                                                </li>                                                
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="d-flex justify-content-between mt-2 px-3 pb-0">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-bed"
+                                                style="margin-right: 10px; color: #B4A79E;"></i><span>1 giường đơn</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-earth-asia"
+                                                style="margin-right: 12px; color: #B4A79E;"></i><span>Diện tích : 21 m²</span></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-person-swimming"
+                                                style="margin-right: 10px; color: #6b74d3;"></i><span>Bể bơi chung</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-wifi"
+                                                style="margin-right: 10px; color: #0a3ce4;"></i><span>Wifi miễn phí</span></li>
+                                    </ul>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <div>
+                                        <i class="fas fa-clock text-dark" style="margin-right: 5px; font-size: 15px;"></i><span
+                                            style="font-size: 15px;">@((item.NgayKetThuc.Value - DateTime.Now).Days) ngày
+                                            @((item.NgayKetThuc.Value - DateTime.Now).Hours) giờ @((item.NgayKetThuc.Value -
+                                DateTime.Now).Minutes) phút</span>
+                                    </div>
+                                    <div>
+                                        @Html.ActionLink("Đặt dịch vụ", "GetDataDatDichVu", "DatDichVu", new {MaDp = item.MaDp}, new {@class = "btn btn-outline-warning btn-sm text-dark"})
+                                    </div>
+                                    @Html.ActionLink("Thanh Toán", "GetDataDatPhong", "HoaDon", new {MaDp = item.MaDp}, new {target
+                        = "_blank",@class="btn btn-sm", @style = "background-color: rgb(85, 199, 254)"})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p></p>
+                </div>
+            }
+        }
+    </div>
+
+    <hr />
+    <h6 class="text-primary">Phòng đôi</h6>
+    <div class="row row-cols-1 row-cols-xs-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 px-4">
+        @foreach (var item in Model)
+        {
+            if (item.MaPNavigation.MaLp == 2)
+            {
+                <div class="card mb-3">
+                    <p></p>
+                    <div class="sub-card p-3 bg-light rounded ">
+                        <div class="card-header d-flex justify-content-between p-0 m-0">
+                            <h5 class="card-title">@(item.MaPNavigation.SoPhong)</h5>
+                            <span
+                                class='text-@(item.MaPNavigation.MaLp == 1 ? "secondary" : (item.MaPNavigation.MaLp == 2 ? "info" : item.MaPNavigation.MaLp == 3 ? "primary" : "warning")) font-weight-light'>@(item.MaPNavigation.MaLpNavigation.TenLp)</span>
+                        </div>
+                        <div class="card-body p-0 mt-2">
+                            <div class="widget-49">
+                                <div class="d-flex justify-content-between">
+                                    <div class="widget-49-title-wrapper">
+                                        <div class="widget-49-date-primary">
+                                            <img class="widget-49-date-day rounded-circle w-100 h-100"
+                                                src='~/Images/KhachHang/@(item.MaKhNavigation.HinhAnh == null ? "noimage.jpg" : item.MaKhNavigation.HinhAnh)'
+                                                alt="Code by TamHoang">
+                                        </div>
+                                        <div class="widget-49-meeting-info">
+                                            <h5 class="">@(item.MaKhNavigation.HoTen)</h5>
+                                            <p class="widget-49-meeting-time">SĐT: @(item.MaKhNavigation.SoDt)</p>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <p></p>
+                                        <div class="dropdown">
+                                            <button class="btn btn-light bi bi-three-dots-vertical text-dark" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
+                                                <li>
+                                                    @Html.ActionLink("Đặt dịch vụ", "GetDataDatDichVu", "DatDichVu", new {MaDp = item.MaDp}, new {@class = "dropdown-item"})
+                                                </li>
+                                                <li>
+                                                    @Html.ActionLink("Chi tiết", "ChiTietDangKyDatPhong", "DatPhong", new {MaDp = item.MaDp}, new {@class = "dropdown-item"})
+                                                </li>                                                
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="d-flex justify-content-between mt-2 px-3 pb-0">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-bed"
+                                                style="margin-right: 10px; color: #B4A79E;"></i><span>1 giường đơn</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-earth-asia"
+                                                style="margin-right: 12px; color: #B4A79E;"></i><span>Diện tích : 21 m²</span></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-person-swimming"
+                                                style="margin-right: 10px; color: #6b74d3;"></i><span>Bể bơi chung</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-wifi"
+                                                style="margin-right: 10px; color: #0a3ce4;"></i><span>Wifi miễn phí</span></li>
+                                    </ul>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <div>
+                                        <i class="fas fa-clock text-dark" style="margin-right: 5px; font-size: 15px;"></i><span
+                                            style="font-size: 15px;">@((item.NgayKetThuc.Value - DateTime.Now).Days) ngày
+                                            @((item.NgayKetThuc.Value - DateTime.Now).Hours) giờ @((item.NgayKetThuc.Value -
+                                DateTime.Now).Minutes) phút</span>
+                                    </div>
+                                    <div>
+                                        @Html.ActionLink("Đặt dịch vụ", "GetDataDatDichVu", "DatDichVu", new {MaDp = item.MaDp}, new {@class = "btn btn-outline-warning btn-sm text-dark"})
+                                    </div>
+                                    @Html.ActionLink("Thanh Toán", "GetDataDatPhong", "HoaDon", new {MaDp = item.MaDp}, new {target
+                        = "_blank",@class="btn btn-sm", @style = "background-color: rgb(85, 199, 254)"})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p></p>
+                </div>
+            }
+        }
+    </div>
+
+
+
+    <hr />
+    <h6 class="text-primary">Phòng gia đình</h6>
+    <div class="row row-cols-1 row-cols-xs-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 px-4">
+        @foreach (var item in Model)
+        {
+            if (item.MaPNavigation.MaLp == 3)
+            {
+                <div class="card mb-3">
+                    <p></p>
+                    <div class="sub-card p-3 bg-light rounded ">
+                        <div class="card-header d-flex justify-content-between p-0 m-0">
+                            <h5 class="card-title">@(item.MaPNavigation.SoPhong)</h5>
+                            <span
+                                class='text-@(item.MaPNavigation.MaLp == 1 ? "secondary" : (item.MaPNavigation.MaLp == 2 ? "info" : item.MaPNavigation.MaLp == 3 ? "primary" : "warning")) font-weight-light'>@(item.MaPNavigation.MaLpNavigation.TenLp)</span>
+                        </div>
+                        <div class="card-body p-0 mt-2">
+                            <div class="widget-49">
+                                <div class="d-flex justify-content-between">
+                                    <div class="widget-49-title-wrapper">
+                                        <div class="widget-49-date-primary">
+                                            <img class="widget-49-date-day rounded-circle w-100 h-100"
+                                                src='~/Images/KhachHang/@(item.MaKhNavigation.HinhAnh == null ? "noimage.jpg" : item.MaKhNavigation.HinhAnh)'
+                                                alt="Code by TamHoang">
+                                        </div>
+                                        <div class="widget-49-meeting-info">
+                                            <h5 class="">@(item.MaKhNavigation.HoTen)</h5>
+                                            <p class="widget-49-meeting-time">SĐT: @(item.MaKhNavigation.SoDt)</p>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <p></p>
+                                        <div class="dropdown">
+                                            <button class="btn btn-light bi bi-three-dots-vertical text-dark" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
+                                                <li>
+                                                    @Html.ActionLink("Đặt dịch vụ", "GetDataDatDichVu", "DatDichVu", new {MaDp = item.MaDp}, new {@class = "dropdown-item"})
+                                                </li>
+                                                <li>
+                                                    @Html.ActionLink("Chi tiết", "ChiTietDangKyDatPhong", "DatPhong", new {MaDp = item.MaDp}, new {@class = "dropdown-item"})
+                                                </li>                                                
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="d-flex justify-content-between mt-2 px-3 pb-0">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-bed"
+                                                style="margin-right: 10px; color: #B4A79E;"></i><span>1 giường đơn</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-earth-asia"
+                                                style="margin-right: 12px; color: #B4A79E;"></i><span>Diện tích : 21 m²</span></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-person-swimming"
+                                                style="margin-right: 10px; color: #6b74d3;"></i><span>Bể bơi chung</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-wifi"
+                                                style="margin-right: 10px; color: #0a3ce4;"></i><span>Wifi miễn phí</span></li>
+                                    </ul>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <div>
+                                        <i class="fas fa-clock text-dark" style="margin-right: 5px; font-size: 15px;"></i><span
+                                            style="font-size: 15px;">@((item.NgayKetThuc.Value - DateTime.Now).Days) ngày
+                                            @((item.NgayKetThuc.Value - DateTime.Now).Hours) giờ @((item.NgayKetThuc.Value -
+                                DateTime.Now).Minutes) phút</span>
+                                    </div>
+                                    <div>
+                                        @Html.ActionLink("Đặt dịch vụ", "GetDataDatDichVu", "DatDichVu", new {MaDp = item.MaDp}, new {@class = "btn btn-outline-warning btn-sm text-dark"})
+                                    </div>
+                                    @Html.ActionLink("Thanh Toán", "GetDataDatPhong", "HoaDon", new {MaDp = item.MaDp}, new {target
+                        = "_blank",@class="btn btn-sm", @style = "background-color: rgb(85, 199, 254)"})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p></p>
+                </div>
+            }
+        }
+    </div>
+
+
+
+
+    <hr />
+    <h6 class="text-primary">Phòng Vip</h6>
+    <div class="row row-cols-1 row-cols-xs-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 px-4">
+        @foreach (var item in Model)
+        {
+            if (item.MaPNavigation.MaLp == 4)
+            {
+                <div class="card mb-3">
+                    <p></p>
+                    <div class="sub-card p-3 bg-light rounded ">
+                        <div class="card-header d-flex justify-content-between p-0 m-0">
+                            <h5 class="card-title">@(item.MaPNavigation.SoPhong)</h5>
+                            <span
+                                class='text-@(item.MaPNavigation.MaLp == 1 ? "secondary" : (item.MaPNavigation.MaLp == 2 ? "info" : item.MaPNavigation.MaLp == 3 ? "primary" : "warning")) font-weight-light'>@(item.MaPNavigation.MaLpNavigation.TenLp)</span>
+                        </div>
+                        <div class="card-body p-0 mt-2">
+                            <div class="widget-49">
+                                <div class="d-flex justify-content-between">
+                                    <div class="widget-49-title-wrapper">
+                                        <div class="widget-49-date-primary">
+                                            <img class="widget-49-date-day rounded-circle w-100 h-100"
+                                                src='~/Images/KhachHang/@(item.MaKhNavigation.HinhAnh == null ? "noimage.jpg" : item.MaKhNavigation.HinhAnh)'
+                                                alt="Code by TamHoang">
+                                        </div>
+                                        <div class="widget-49-meeting-info">
+                                            <h5 class="">@(item.MaKhNavigation.HoTen)</h5>
+                                            <p class="widget-49-meeting-time">SĐT: @(item.MaKhNavigation.SoDt)</p>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <p></p>
+                                        <div class="dropdown">
+                                            <button class="btn btn-light bi bi-three-dots-vertical text-dark" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
+                                                <li>
+                                                    @Html.ActionLink("Đặt dịch vụ", "GetDataDatDichVu", "DatDichVu", new {MaDp = item.MaDp}, new {@class = "dropdown-item"})
+                                                </li>
+                                                <li>
+                                                    @Html.ActionLink("Chi tiết", "ChiTietDangKyDatPhong", "DatPhong", new {MaDp = item.MaDp}, new {@class = "dropdown-item"})
+                                                </li>                                                
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="d-flex justify-content-between mt-2 px-3 pb-0">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-bed"
+                                                style="margin-right: 10px; color: #B4A79E;"></i><span>1 giường đơn</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-earth-asia"
+                                                style="margin-right: 12px; color: #B4A79E;"></i><span>Diện tích : 21 m²</span></li>
+                                    </ul>
+                                    <ul>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-person-swimming"
+                                                style="margin-right: 10px; color: #6b74d3;"></i><span>Bể bơi chung</span></li>
+                                        <li class="list-group-item p-0 bg-transparent"><i class="fas fa-wifi"
+                                                style="margin-right: 10px; color: #0a3ce4;"></i><span>Wifi miễn phí</span></li>
+                                    </ul>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <div>
+                                        <i class="fas fa-clock text-dark" style="margin-right: 5px; font-size: 15px;"></i><span
+                                            style="font-size: 15px;">@((item.NgayKetThuc.Value - DateTime.Now).Days) ngày
+                                            @((item.NgayKetThuc.Value - DateTime.Now).Hours) giờ @((item.NgayKetThuc.Value -
+                                DateTime.Now).Minutes) phút</span>
+                                    </div>
+                                    <div>
+                                        @Html.ActionLink("Đặt dịch vụ", "GetDataDatDichVu", "DatDichVu", new {MaDp = item.MaDp}, new {@class = "btn btn-outline-warning btn-sm text-dark"})
+                                    </div>
+                                    @Html.ActionLink("Thanh Toán", "GetDataDatPhong", "HoaDon", new {MaDp = item.MaDp}, new {target
+                        = "_blank",@class="btn btn-sm", @style = "background-color: rgb(85, 199, 254)"})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p></p>
+                </div>
+            }
+        }
+    </div>
+}

@@ -1,0 +1,244 @@
+@model QLKSMVC.Models.NhanVienModel;
+<style>
+    .account-settings .user-profile {
+        margin: 0 0 1rem 0;
+        padding-bottom: 1rem;
+        text-align: center;
+    }
+
+    .account-settings .user-profile .user-avatar {
+        margin: 0 0 1rem 0;
+    }
+
+    .account-settings .user-profile .user-avatar img {
+        width: 90px;
+        height: 90px;
+        -webkit-border-radius: 100px;
+        -moz-border-radius: 100px;
+        border-radius: 100px;
+    }
+
+    .account-settings .user-profile h5.user-name {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .account-settings .user-profile h6.user-email {
+        margin: 0;
+        font-size: 0.8rem;
+        font-weight: 400;
+        color: #9fa8b9;
+    }
+
+    .account-settings .about {
+        margin: 2rem 0 0 0;
+        text-align: center;
+    }
+
+    .account-settings .about h5 {
+        margin: 0 0 15px 0;
+        color: #007ae1;
+    }
+
+    .account-settings .about p {
+        font-size: 0.825rem;
+    }
+
+    .form-control {
+        border: 1px solid #cfd1d8;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+        font-size: .825rem;
+        background: #ffffff;
+        color: #2e323c;
+    }
+
+    .card {
+        background: #ffffff;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        border: 0;
+        margin-bottom: 1rem;
+    }
+
+    body{
+        background-color: rgb(247, 247, 255);
+    }
+
+    .info{
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    }
+
+    .profile{
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    }
+</style>
+
+
+@if (ViewBag.ThongBaoLoi != null)
+{
+    <div class="alert alert-danger d-flex justify-content-center errormessage" role="alert">
+        @ViewBag.ThongBaoLoi
+    </div>
+}
+
+@if (ViewBag.ThongBaoThanhCong != null)
+{
+    <div class="alert alert-success d-flex justify-content-center successmessage" role="alert">
+        @ViewBag.ThongBaoThanhCong
+    </div>
+}
+<div class="container mt-5" >
+    <div class="row gutters">
+        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+            <div class="card h-100 info">
+                <div class="card-body">
+                    <div class="account-settings">
+                        <div class="user-profile">
+                            <div class="user-avatar">
+                                <img id="imageprofile" src='~/Images/NhanVien/@((Model == null || Model.HinhAnh == null) ? "noimage.jpg" : Model.HinhAnh)' alt="Code by TamHoang">
+                            </div>
+                            <h5 class="user-name">@(Model != null ? Model.HoTen : "")</h5>
+                            <h6 class="user-email">@ViewBag.tenDN</h6>
+                        </div>
+                        <div class="about">
+                            <h5>About</h5>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam iusto itaque eum vero? Adipisci quas voluptate expedita cupiditate veritatis in accusamus </p>
+                        </div>
+
+                        <hr class="my-4">
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe me-2 icon-inline"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Website</h6>
+									<span class="text-secondary">https://bootdey.com</span>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github me-2 icon-inline"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>Github</h6>
+									<span class="text-secondary">TamHoang</span>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter me-2 icon-inline text-info"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>Twitter</h6>
+									<span class="text-secondary">TamHoang</span>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram me-2 icon-inline text-danger"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>Instagram</h6>
+									<span class="text-secondary">TamHoang</span>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+									<h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-facebook me-2 icon-inline text-primary"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>Facebook</h6>
+									<span class="text-secondary">TamHoang</span>
+								</li>
+							</ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+            <div class="card h-100 profile">
+                <form asp-action="EditProfile" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <div class="row gutters">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-2">
+                                <h6 class="mb-2 text-primary">Thông tin cá nhân bắt buộc</h6>
+                            </div>
+                            <input asp-for="MaNv" class="form-control" style="border-radius: 5px;" value="@(ViewBag.MaNv)" hidden/>
+                            <input asp-for="MaCv" class="form-control" style="border-radius: 5px;" value="@(ViewBag.MaCv == 0 ? 2 : 1)" hidden/>
+                            <input asp-for="UserName" class="form-control" style="border-radius: 5px;" value="@ViewBag.tenDN" hidden/>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-2">
+                                <div class="form-group">
+                                    <label asp-for="HoTen"></label>
+                                    <input type="text" class="form-control" style="border-radius: 5px;" asp-for="HoTen" placeholder="Nhập họ tên">
+                                    <span asp-validation-for="HoTen" class="text-danger errormessage"></span>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-2">
+                                <div class="form-group">
+                                    <label asp-for="NgaySinh"></label>
+                                    <input type="date" asp-for="NgaySinh"
+                                        min='@(DateTime.Now.AddYears(-50).ToString("yyyy-MM-dd"))'
+                                        max='@(DateTime.Now.AddYears(-19).ToString("yyyy-MM-dd"))' class="form-control" style="border-radius: 5px;">
+                                    <span asp-validation-for="NgaySinh" class="text-danger errormessage"></span>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-2">
+                                <div class="form-group">
+                                    <label asp-for="SoDt"></label>
+                                    <input type="text" asp-for="SoDt" class="form-control" style="border-radius: 5px;" placeholder="Nhập số điện thoại">
+                                    <span asp-validation-for="SoDt" class="text-danger errormessage"></span>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-2">
+                                <div class="form-group">
+                                    <label asp-for="Cccd"></label>
+                                    <input type="number" asp-for="Cccd" class="form-control" style="border-radius: 5px;" placeholder="Nhập CMND/CCCD">
+                                    <span asp-validation-for="Cccd" class="text-danger errormessage"></span>
+                                    <span class="text-danger errormessage">@(ViewBag.Duplicate)</span>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-2">
+                                <label asp-for="GioiTinh" style="display: block;"></label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" asp-for="GioiTinh" value="True">
+                                    <label class="form-check-label" for="inlineRadio1">Nam</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" asp-for="GioiTinh" value="False">
+                                    <label class="form-check-label" for="inlineRadio2">Nữ</label>
+                                </div>
+                                <span asp-validation-for="GioiTinh" class="text-danger errormessage" style="display: block;"></span>
+                            </div>
+                        </div>
+                        <div class="row gutters">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-2">
+                                <h6 class="mt-3 mb-2 text-primary">Thông tin khác</h6>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-2">
+                                <div class="form-group">
+                                    <label asp-for="DiaChi"></label>
+                                    <input class="form-control" style="border-radius: 5px;" asp-for="DiaChi" placeholder="Nhập địa chỉ">
+                                    <span asp-validation-for="DiaChi" class="text-danger errormessage"></span>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-2">
+                                <div class="form-group">
+                                    <label asp-for="Email"></label>
+                                    <input class="form-control" style="border-radius: 5px;" asp-for="Email" placeholder="Nhập email">
+                                    <span asp-validation-for="Email" class="text-danger errormessage"></span>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-2">
+                                <input asp-for="HinhAnh" value="" type="file"
+                                        class="form-control bg-dark text-light custom-file-input" hidden>
+                                <div class="form-group">
+                                    <label asp-for="HinhAnh"></label>
+                                    <input id="imageupload" type="file" accept="image/png, image/gif, image/jpeg" class="form-control" style="border-radius: 5px;" asp-for="@(Model.FileUpload)">
+                                    <span asp-validation-for="@(Model.FileUpload)" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-2">
+                                <div class="form-group">
+                                    <label asp-for="NgayVaoLam"></label>
+                                    <input class="form-control" style="border-radius: 5px;" asp-for="NgayVaoLam" value='@(Model != null ? Model.NgayVaoLam.Value.ToString("yyyy-MM-ddTHH:mm:ss") : DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"))' readonly>
+                                    <span asp-validation-for="NgayVaoLam" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row gutters mt-5">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-2">
+                                <div class="text-right">
+                                    @if (Model != null)
+                                    {
+                                        @Html.ActionLink("Hủy bỏ", "DanhSachDatPhong", "DatPhong", null, new {@class = "btn btn-secondary"})
+                                    }
+                                    <button type="submit" id="submit" name="submit"
+                                        class="btn btn-primary">Cập nhật</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,160 @@
+@model DatPhongModel;
+
+@{
+    var phong = ViewBag.Phong as PhongModel;
+    var tienCoc = 0;
+    if (phong != null)
+    {
+        if (phong.MaLp == 1)
+            tienCoc = 150000;
+        else if (phong.MaLp == 2)
+            tienCoc = 300000;
+        else if (phong.MaLp == 3)
+            tienCoc = 400000;
+        else if (phong.MaLp == 4)
+            tienCoc = 500000;
+        else
+            tienCoc = 0;
+    }
+}
+
+
+<h1 class="text-center mt-3 mb-2">ĐĂNG KÝ ĐẶT PHÒNG</h1>
+<hr>
+
+<form asp-action="DangKyDatPhong">
+    <div class="d-flex justify-content-center errormessage">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4">
+            <div class="d-flex justify-content-center">
+                <h5 class="text-primary">Thông tin khách hàng</h5>
+            </div>
+            <hr>
+            <div class="form-group mb-3">
+                <label>Họ tên(<span class="text-danger">*</span>)</label>
+                <input type="text" value='@(ViewBag.KHModel == null ? "" : ViewBag.KHModel.HoTen)'
+                    class="form-control mt-1 rounded" name="HoTen" placeholder="Nhập họ tên">
+                <span class="text-danger errormessage">@ViewBag.HoTenError</span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Ngày sinh(<span class="text-danger">*</span>)</label>
+                <input type="date" name="NgaySinh" value='@(ViewBag.KHModel == null ? "" : ViewBag.KHModel.NgaySinh)'
+                    min='@(DateTime.Now.AddYears(-110).ToString("yyyy-MM-dd"))'
+                    max='@(DateTime.Now.AddYears(-16).ToString("yyyy-MM-dd"))' class="form-control mt-1 rounded">
+                <span class="text-danger errormessage">@ViewBag.NgaySinhError</span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Số điện thoại(<span class="text-danger">*</span>)</label>
+                <input type="tel" name="SoDt" maxlength="11" minlength="10" class="form-control mt-1 rounded"
+                    value='@(ViewBag.KHModel == null ? "" : ViewBag.KHModel.SoDt)' placeholder="Nhập số điện thoại">
+                <span class="text-danger errormessage">@ViewBag.SoDTError</span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>CCCD/CMND(<span class="text-danger">*</span>)</label>
+                <input id="CCCD" type="tel" minlength="9"  maxlength="12" name="Cccd" class="form-control mt-1 rounded"
+                    value='@(ViewBag.KHModel == null ? "" : ViewBag.KHModel.Cccd)' placeholder="Nhập CMND/CCCD">
+                <span class="text-danger errormessage">@(ViewBag.CCCDError)</span>
+                <span class="text-danger errormessage">@(ViewBag.Duplicate)</span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label style="display: block;">Giới tính(<span class="text-danger">*</span>)</label>
+                @if (ViewBag.KHModel != null)
+                {
+                    if (ViewBag.KHModel.GioiTinh == true)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="GioiTinh" value="True" checked>
+                            <label class="form-check-label" for="inlineRadio1">Nam</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="GioiTinh" value="False">
+                            <label class="form-check-label" for="inlineRadio2">Nữ</label>
+                        </div>
+                    }
+                    else if (ViewBag.KHModel.GioiTinh == false)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="GioiTinh" value="True">
+                            <label class="form-check-label" for="inlineRadio1">Nam</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="GioiTinh" value="False" checked>
+                            <label class="form-check-label" for="inlineRadio2">Nữ</label>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="GioiTinh" value="True">
+                            <label class="form-check-label" for="inlineRadio1">Nam</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="GioiTinh" value="False">
+                            <label class="form-check-label" for="inlineRadio2">Nữ</label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="GioiTinh" value="True">
+                        <label class="form-check-label" for="inlineRadio1">Nam</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="GioiTinh" value="False">
+                        <label class="form-check-label" for="inlineRadio2">Nữ</label>
+                    </div>
+                }
+            </div>
+            <span class="text-danger errormessage" style="display: block;">@(ViewBag.GioiTinhError == null ? "" :
+                ViewBag.GioiTinhError)</span>
+        </div>
+
+
+        <div class="col-sm-4">
+            <div class="d-flex justify-content-center">
+                <h5 class="text-primary">Thông tin đặt phòng</h5>
+            </div>
+            <hr>
+            <div class="form-group mb-3">
+                <label asp-for="SoNguoi" class="control-label"></label>(<span class="text-danger">*</span>)
+                <input asp-for="SoNguoi" class="form-control mt-1" />
+                <span asp-validation-for="SoNguoi" class="text-danger errormessage"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="NgayBatDau" class="control-label"></label>(<span class="text-danger">*</span>)
+                <input readonly asp-for="NgayBatDau"
+                    value='@(ViewBag.NgayDatPDK == null ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm") : ViewBag.NgayDatPDK.ToString("yyyy-MM-ddTHH:mm"))'
+                    class="form-control mt-1" />
+                <span asp-validation-for="NgayBatDau" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="NgayKetThuc" class="control-label"></label>(<span class="text-danger">*</span>)
+                <input readonly asp-for="NgayKetThuc"
+                    value='@(ViewBag.NgayTraPDK == null ? DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:mm") : ViewBag.NgayTraPDK.ToString("yyyy-MM-ddTHH:mm"))'
+                    class="form-control mt-1" />
+                <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="TienDatCoc" class="control-label"></label>(<span class="text-danger">*</span>)
+                <input asp-for="TienDatCoc" min="@tienCoc" value="@tienCoc" type="number" class="form-control mt-1" />
+                <span asp-validation-for="TienDatCoc" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="MaP" class="control-label"></label>(<span class="text-danger">*</span>)
+                <input asp-for="MaP" class="form-control mt-1" value="@(ViewBag.Phong.MaP)" readonly></input>
+            </div>
+        </div>
+        <div class="col-sm-2"></div>
+        <div class="form-group mb-3 d-flex justify-content-center mt-5">
+            <input type="submit" id="btnSubmit" value="Create" class="btn btn-primary" />
+        </div>
+    </div>
+</form>

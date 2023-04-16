@@ -1,0 +1,54 @@
+@model QLKSMVC.Models.DatPhongModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1 class="text-center mt-5 mb-4">Cập nhật thông tin đặt phòng</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4 col-sm-12"></div>
+    <div class="col-md-4 col-sm-12 p-4 rounded" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px 0px;">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger errormessage"></div>
+            <input type="hidden" asp-for="MaDp" />
+            <div class="form-group">
+                <label asp-for="SoNguoi" class="control-label"></label>
+                <input asp-for="SoNguoi" class="form-control" />
+                <span asp-validation-for="SoNguoi" class="text-danger errormessage"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NgayBatDau" class="control-label"></label>
+                <input asp-for="NgayBatDau" class="form-control" />
+                <span asp-validation-for="NgayBatDau" class="text-danger errormessage"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NgayKetThuc" class="control-label"></label>
+                <input asp-for="NgayKetThuc" class="form-control" />
+                <span asp-validation-for="NgayKetThuc" class="text-danger errormessage"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TienDatCoc" class="control-label"></label>
+                <input asp-for="TienDatCoc" class="form-control" />
+                <span asp-validation-for="TienDatCoc" class="text-danger errormessage"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaP" class="control-label"></label>
+                <select asp-for="MaP" class="form-control" asp-items="ViewBag.MaP"></select>
+                <span asp-validation-for="MaP" class="text-danger errormessage"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaKh" class="control-label"></label>
+                <select asp-for="MaKh" class="form-control" asp-items="ViewBag.MaKh"></select>
+                <span asp-validation-for="MaKh" class="text-danger errormessage"></span>
+            </div>
+            <hr>
+            <div class="form-group mt-3 d-flex justify-content-between">
+                <a asp-action="Index" class="text-secondary"><i class="bi bi-arrow-return-left"></i> Trở về danh sách đặt phòng</a>
+                <input type="submit" value="Lưu" class="btn btn-info text-dark" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 col-sm-12"></div>
+</div>
+

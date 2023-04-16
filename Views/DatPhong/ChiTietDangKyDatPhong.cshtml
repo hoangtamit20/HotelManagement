@@ -1,0 +1,321 @@
+@model DatPhongModel;
+
+@{
+    var listDatDichVu = ViewBag.ListDatDichVu as List<DatDichVuModel>;
+    var dem = 0;
+    var hoaDon = ViewBag.HoaDon as HoaDonModel;
+    decimal tongTien = 0;
+}
+<h1 class="text-center mt-5 mb-5">CHI TIẾT ĐẶT PHÒNG</h1>
+
+@if (ViewBag.DatPhongThanhCong != null)
+{
+    <div class="alert alert-success errormessage">@(ViewBag.DatPhongThanhCong)</div>
+}
+@if (ViewBag.ThongBaoLoi != null)
+{
+    <div class="alert alert-danger errormessage">@(ViewBag.ThongBaoLoi)</div>
+    @Html.ActionLink("Trở về danh sách đặt phòng", "Index", "DatPhong", null, new {@class = "link-opacity-75-hover"})
+}
+else
+{
+    @if (Model != null)
+    {
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <h4 class="d-flex justify-content-center">Thông tin đặt phòng</h4>
+                <hr>
+                <div class="info-khachhang">
+                    <h6 class="text-info">Thông tin khách hàng</h6>
+                    <div class="row">
+                        <div class="col-3">
+                            <p>Khách hàng : </p>
+                            <p>Số điện thoại : </p>
+                            <p>CMND/CCCD : </p>
+                        </div>
+                        <div class="col-5">
+                            <p>@(Model.MaKhNavigation.HoTen)</p>
+                            <p>@(Model.MaKhNavigation.SoDt)</p>
+                            <p>@(Model.MaKhNavigation.Cccd)</p>
+                            
+                        </div>
+                        <div class="col-4">
+                            <img class="rounded-circle" style="height: 120px; width: 120px;" src='~/Images/KhachHang/@(Model.MaKhNavigation.HinhAnh == null ? "noimage.jpg" : Model.MaKhNavigation.HinhAnh)' alt="Code by TamHoang">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <p>Địa chỉ : </p>
+                        </div>
+                        <div class="col-9">
+                            <p>@(Model.MaKhNavigation.DiaChi)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="chi-tiet-dat-phong">
+                    <h6 class="text-info">Chi tiết đặt phòng</h6>
+                    <div class="row">
+                        <div class="col-7">
+                            <h6 class="text-light">Hotel Crystal</h6>
+                            <i class="bi bi-pin-map-fill text-primary" id="iconmap"></i><span for="iconmap">144 Nguyễn Lương
+                                Bằng, Hòa Khánh Bắc, Liên Chiểu, Đà Nẵng</span>
+                            <p><i class="bi bi-key text-primary"></i> Số phòng : @(Model.MaPNavigation.SoPhong)</p>
+                        </div>
+                        <div class="col-5">
+                            <img class="rounded w-100" style="height: 200px;" src='~/Images/Phong/@(Model.MaPNavigation.HinhAnh == null ? "noimage.jpg" : Model.MaPNavigation.HinhAnh)' alt="Code by TamHoang">
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="check-in-out">
+                    <div class="row">
+                        <div class="col-6">
+                            <i class="bi bi-calendar2-plus text-primary" style="margin-right: 5px;"></i><strong>Nhận phòng : </strong><span>@(Model.NgayBatDau.Value)</span>
+                            <p></p>
+                            <i class="bi bi-people-fill text-primary" style="margin-right: 5px;"></i><span>@(Model.SoNguoi.Value) khách</span>
+                        </div>
+                        <div class="col-6">
+                            <i class="bi bi-calendar2-minus text-danger" style="margin-right: 5px;"></i><strong>Trả phòng : </strong><span>@(Model.NgayKetThuc.Value)</span>
+                            @{
+                                var s = DateTime.Now > Model.NgayKetThuc.Value ? "Đã trả phòng" : (Model.NgayBatDau.Value <= DateTime.Now && Model.NgayKetThuc.Value >= DateTime.Now) ? "Đang sử dụng" : "Chưa nhận phòng";
+                            }
+                            <p></p>
+                            <i class='bi bi-activity text-@(DateTime.Now > Model.NgayKetThuc.Value ? "warning" : (Model.NgayBatDau.Value <= DateTime.Now && Model.NgayKetThuc.Value >= DateTime.Now) ? "primary" : "secondary")'></i>
+                            <span class='badge text-bg-@(DateTime.Now > Model.NgayKetThuc.Value ? "warning" : (Model.NgayBatDau.Value <= DateTime.Now && Model.NgayKetThuc.Value >= DateTime.Now) ? "primary" : "secondary")'>@s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="info-rom">
+                    <div class="row">
+                        <h6 class="text-info">Phòng</h6>
+                        <div class="row">
+                            <div class="col-3">
+                                <p>Loại phòng : </p>
+                                <p>Giá phòng : </p>
+                                <p>Thông tin : </p>
+                            </div>
+                            <div class="col-9">
+                                <p>@(Model.MaPNavigation.MaLpNavigation.TenLp)</p>
+                                <p><strong>@(String.Format("{0:#,#}", Model.MaPNavigation.MaLpNavigation.DonGia.Value))</strong><small> (VNĐ)</small> </p>
+                                <p>@(Model.MaPNavigation.MoTa == null ? "không có" : Model.MaPNavigation.MoTa)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6 col-sm-12">
+                <h4 class="d-flex justify-content-center">Thông tin hóa đơn - dịch vụ</h4>
+                <hr>
+                <div class="row">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="text-info">Danh sách đã sử dụng dịch vụ</h6>
+                        <!-- Button trigger modal -->
+                        @if (listDatDichVu != null)
+                        {
+                            <a type="button" class="link-offset-2 link-underline link-underline-opacity-25" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                Xem Hóa Đơn
+                            </a>
+                        }
+                    </div>
+                    <div class="scrollbarContainer rounded"
+                        style="overflow: scroll; min-height: 42vh; max-height: 55vh; background-color: white; padding: 40px; box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;">
+                        <div class="row hidden-md-up">
+                            @if(listDatDichVu != null && listDatDichVu.Count > 0)
+                            {
+                                <table id="tableRender">
+                                    <tr class="">
+                                        <th>#</th>
+                                        <th>Tên DV</th>
+                                        <th>Ngày đặt</th>
+                                        <th>Giờ đặt</th>
+                                        <th style="text-align: center;">S.Lượng</th>
+                                        <th>Đơn Giá</th>
+                                        <th>Thành Tiền</th>
+                                    </tr>                                
+                                @foreach(var item in listDatDichVu)
+                                {
+                                    <tr style="border-bottom: 1px dashed rgb(151, 144, 144);">
+                                        <td>@(++dem)</td>
+                                        <td>@(item.MaDvNavigation.TenDv)</td>
+                                        <td>@(item.NgayDatDichVu.Value.ToString("dd/MM/yyyy"))</td>
+                                        <td>@(item.NgayDatDichVu.Value.ToString("HH:mm tt"))</td>
+                                        <td style="text-align: center;">@(item.SoLuong.Value)</td>
+                                        <td>@(String.Format("{0:#,#}", item.MaDvNavigation.DonGia.Value))</td>
+                                        <td>@(String.Format("{0:#,#}", item.TongTien != null ? item.TongTien.Value : (item.SoLuong.Value * item.MaDvNavigation.DonGia.Value)))<small style="font-size: 10px;"> VNĐ</small></td>
+                                    </tr>
+                                }
+                            </table>
+                            }
+                            else
+                            {
+                                <p class="d-flex justify-content-center text-danger">Danh sách sử dụng dịch vụ rỗng!</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="chuc-nang">
+                    <h6 class="text-info">Thông tin hóa đơn</h6>
+                    <div class="d-flex justify-content-between">
+                        <div class="col-3">
+                            <p>Tổng tiền phòng : </p>
+                            <p>Tổng tiền dịch vụ : </p>
+                            <p>Tiền cọc : </p>
+                            <hr>
+                            <p><strong>Tổng tiền :</strong> </p>
+                        </div>
+                        <div class="col-6">
+                            <p style="display: block;" class='@(s.Equals("Đang sử dụng") ? "badge text-bg-success" : (s.Equals("Đã trả phòng") && hoaDon == null) ? "badge text-bg-danger" : s.Equals("Chưa nhận phòng") ? "badge text-bg-secondary" : "")'>@(hoaDon != null ? String.Format("{0:#,#}",hoaDon.TongTienPhong.Value) : s.Equals("Đã trả phòng") ? "Phòng đến hạn chưa được thanh toán" : s) <small>@(hoaDon != null ? " VNĐ" : "")</small></p>
+                            <p class='@(s.Equals("Đang sử dụng") ? "badge text-bg-success" : (s.Equals("Đã trả phòng") && hoaDon == null) ? "badge text-bg-danger" : s.Equals("Chưa nhận phòng") ? "badge text-bg-secondary" : "")'>@(hoaDon != null ? String.Format("{0:#,#}",hoaDon.TongTienDichVu.Value) : s.Equals("Đã trả phòng") ? "Phòng đến hạn chưa được thanh toán" : s) <small>@(hoaDon != null ? " VNĐ" : "")</small></p>
+                            <p class="">@(String.Format("{0:#,#}",Model.TienDatCoc.Value))<small> VNĐ</small></p>
+                            <hr>
+                            <p class='@(s.Equals("Đang sử dụng") ? "badge text-bg-success" : (s.Equals("Đã trả phòng") && hoaDon == null) ? "badge text-bg-danger" : s.Equals("Chưa nhận phòng") ? "badge text-bg-secondary" : "")'><strong>@(hoaDon != null ? String.Format("{0:#,#}",hoaDon.TongTien.Value) : s.Equals("Đã trả phòng") ? "Phòng đến hạn chưa được thanh toán" : s) <small>@(hoaDon != null ? " VNĐ" : "")</small></strong></p>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <div class="d-flex justify-content-between mt-2">                        
+                        <div class="div">
+                            @Html.ActionLink("  Trở về danh sách phòng đang sử dụng", "DanhSachPhongDangSuDung", "DatPhong", null, new {@class = "bi bi-arrow-return-left link-offset-2 link-underline link-underline-opacity-25 text-dark"})
+                        </div>
+                        @Html.ActionLink("Thay đổi", "Edit", "DatPhong", new {id=Model.MaDp}, new {@class = "btn btn-outline-secondary"})
+                        @if (s == "Chưa nhận phòng")
+                        {
+                            @Html.ActionLink("Hủy phòng", "ThayDoiDatPhong", "DatPhong", null, new {@class = "btn btn-outline-danger"})
+                        }
+                        else
+                        {
+                            @Html.ActionLink((hoaDon != null ? "Xem hóa đơn" : "Thanh Toán"), "GetDataDatPhong", "HoaDon", new{MaDp = Model.MaDp}, new {@class = "btn btn-primary"})
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Thông tin hóa đơn</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-header">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+        <form asp-action="GeneratePDF" id="formPDF">
+            <input id="pdfValue" name="html" hidden>
+            <div class="text-end">
+                <button type="button" class="btn btn-outline-secondary"><i class="bi bi-printer text-info"></i> Print</button>
+                <button id="btnPdf" type="button" class="btn btn-outline-success"><i class="bi bi-filetype-pdf text-danger"></i>
+                    Xuất hóa đơn</button>
+            </div>
+        </form>
+      </div>
+      <div class="modal-body" id="pdfContainer">
+        <div class="printmain" style="width: 100%;">
+            <table class="tabletieude" style="width: 100%;">
+                <tr>
+                    <td colspan="1">
+                        <img src="~/Images/Phong/phongdoi.jpg" alt="code by TamHoang" class="logo" style="border-radius: 50%;" width="100px" height="100px">
+                    </td>
+                    <td colspan="3" style="text-align: center;">
+                        <h3>Khách sạn Royal</h3>
+                        <p style="padding: 0; margin: 0;">Số 102 đường Hai Mươi Tám Tháng Ba, Thanh Hà, Hội An, Quảng Nam</p>
+                        <p>Tel : (+84) 369450059</p>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="4" style="width: 100%; text-align: center;">
+                        <h2>HÓA ĐƠN DỊCH VỤ</h2>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 20%;">Khách hàng : </td>
+                    <td style="width: 30%;">Hoàng Trọng Tâm</td>
+                    <td style="width: 20%;">Thu ngân : </td>
+                    <td style="width: 30%;">Võ Văn Thành</td>
+                </tr>
+                <tr>
+                    <td style="width: 20%;">Điện thoại : </td>
+                    <td style="width: 30%;">0369450059</td>
+                    <td style="width: 20%;">Số phòng : </td>
+                    <td style="width: 30%;">@(Model.MaPNavigation.SoPhong)</td>
+                </tr>
+                <tr>
+                    <td style="width: 20%;">Ngày HĐ: </td>
+                    <td style="width: 30%;">@(hoaDon != null ? hoaDon.NgayHoaDon.Value : DateTime.Now)</td>
+                    <td style="width: 20%;">Số HĐ : </td>
+                    <td style="width: 30%;">@(Model.MaDp)-@(Model.MaKh)</td>
+                </tr>
+                <tr>
+                    <td style="width: 20%;">Ngày đặt phòng : </td>
+                    <td style="width: 30%;">@(Model.NgayBatDau.Value)</td>
+                    <td style="width: 20%;">Ngày trả phòng : </td>
+                    <td style="width: 30%;">@(Model.NgayKetThuc.Value)</td>
+                </tr>
+            </table>
+            <hr>
+            @if(listDatDichVu != null && listDatDichVu.Count > 0)
+            {
+                dem = 0;
+                <table id="tableRender" style="width: 100%;">
+                    <tr style="font-size: 12px;">
+                        <th>#</th>
+                        <th>Tên DV</th>
+                        <th>Ngày đặt</th>
+                        <th>Giờ đặt</th>
+                        <th class="text-center">S.Lượng</th>
+                        <th>Đơn Giá</th>
+                        <th>Thành Tiền</th>
+                    </tr>                                
+                    @foreach(var item in listDatDichVu)
+                    {
+                        tongTien += item.TongTien.Value;
+                        <tr style="border-bottom: 1px dashed rgb(151, 144, 144); font-size: 12px; height: 35px;">
+                            <td>@(++dem)</td>
+                            <td>@(item.MaDvNavigation.TenDv)</td>
+                            <td>@(item.NgayDatDichVu.Value.ToString("dd/MM/yyyy"))</td>
+                            <td>@(item.NgayDatDichVu.Value.ToString("HH:mm tt"))</td>
+                            <td class="text-center">@(item.SoLuong.Value)</td>
+                            <td>@(String.Format("{0:#,#}", item.MaDvNavigation.DonGia.Value))</td>
+                            <td>@(String.Format("{0:#,#}", item.TongTien != null ? item.TongTien.Value : (item.SoLuong.Value * item.MaDvNavigation.DonGia.Value)))<small style="font-size: 10px;"> VNĐ</small></td>
+                        </tr>
+                    }
+                </table>
+                <hr>
+                <table style="width: 100%;">
+                    <tr>
+                        <td colspan="4" style="width: 100%; text-align: right;">
+                            <h4><strong style="text-decoration: underline;">Tổng tiền :</strong> <span>@(String.Format("{0:#,#}", hoaDon != null ? hoaDon.TongTienDichVu.Value : tongTien)) <small>VNĐ</small></span></h4>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="info-footer" style="width: 100%; text-align: center; margin-top: 20px;">
+                    <p style="padding: 0; margin: 0;">Giờ in : <i>@(DateTime.Now)</i></p>
+                    <i class="bi bi-wifi">Passwifi : codemetthinghi</i>
+                    <h5><i>Xin cảm ơn và hẹn gặp lại!</i></h5>
+                </div>
+            }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js" ></script>
+<script src="~/js/printHoaDon.js"></script>
+}

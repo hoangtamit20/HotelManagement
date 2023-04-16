@@ -1,0 +1,91 @@
+@model IEnumerable<QLKSMVC.Models.HoaDonModel>
+
+@{
+    ViewData["Title"] = "Index";
+    var i = 0;
+}
+
+@if(ViewBag.ThongBaoThanhCong != null)
+{
+    <div class="alert alert-success errormessage">@ViewBag.ThongBaoThanhCong</div>
+}
+
+@if(ViewBag.ThongBaoLoi != null)
+{
+    <div class="alert alert-danger errormessage">@ViewBag.ThongBaoLoi</div>
+}
+
+
+<h1 class="text-center mt-5 mb-3">Danh sách hóa đơn đặt phòng</h1>
+<button class="btn btn-outline-primary mb-2 d-flex justify-content-end" id="btnExportExcel" onclick="fnExcelReport();"><i class="bi bi-file-earmark-excel"></i> Xuất File Excel</button>
+<table class="table" id="myTable">
+    <thead class="table-info">
+        <tr>
+            <th>#</th>
+            <th>Số HĐ</th>
+            <th>Ngày hóa đơn</th>
+            <th>Phòng</th>
+            <th>Loại phòng</th>
+            <th>Khách hàng</th>
+            <th>Thu ngân</th>
+            <th>Tiền cọc</th>
+            <th>Tiền dịch vụ</th>
+            <th>Tiền phòng</th>
+            <th>Tổng tiền</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@(++i)</td>
+            <td>@Html.DisplayFor(modelItem => item.MaHddp)</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayHoaDon)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaDpNavigation.MaPNavigation.SoPhong)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaDpNavigation.MaPNavigation.MaLpNavigation.TenLp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaDpNavigation.MaKhNavigation.HoTen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaNvNavigation.HoTen)
+            </td>
+            <td>
+                @String.Format("{0:#,#}",item.MaDpNavigation.TienDatCoc.Value)<small> VNĐ</small>
+            </td>
+            <td>
+                @String.Format("{0:#,#}",item.TongTienDichVu.Value)<small> VNĐ</small>
+            </td>
+            <td>
+                @String.Format("{0:#,#}",item.TongTienPhong.Value)<small> VNĐ</small>
+            </td>
+            <td>
+                @String.Format("{0:#,#}",item.TongTien.Value)<small> VNĐ</small>
+            </td>
+            <td>
+                @Html.ActionLink("Xem", "GetDataDatPhong", "HoaDon", new{MaDp=item.MaDp}, new {@class = "btn btn-outline-info"})
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+@section Scripts{
+    <link rel="stylesheet" href="~/DataTables/datatables.css">
+    <script src="~/DataTables/datatables.js"></script>
+    <script src="~/js/exportExcel.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#myTable').dataTable({
+                "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+                "iDisplayLength": 25
+            });
+        });
+    </script>
+}

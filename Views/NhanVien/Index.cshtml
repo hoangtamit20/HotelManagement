@@ -1,0 +1,298 @@
+@model IEnumerable<QLKSMVC.Models.NhanVienModel>
+
+@{
+    ViewData["Title"] = "Danh sách nhân viên";
+}
+
+@if(ViewBag.phanQuyenErrorMessage != null)
+{
+    <div style="color: red;" class="alert alert-danger d-flex justify-content-center errormessage mt-4" role="alert">
+        @ViewBag.phanQuyenErrorMessage
+    </div>
+}
+<h1 class="text-center">Danh Sách Nhân Viên</h1>
+
+<div class="table-responsive">
+    <table id="myTable" class="table no-wrap v-middle mb-0">
+        <thead class="table-info">
+            <tr class="border-0">
+                <th>#</th>
+                <th>Mã NV</th>
+                <th>Họ Tên</th>
+                <th>Giới Tính</th>
+                <th>Chức Vụ</th>
+                <th>Lương Căn Bản</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td></td>
+                    <td>@(item.MaNv)</td>
+                    <td>@(item.HoTen)</td>
+                    <td>@(item.GioiTinh.Value == true ? "Nam" : "Nữ")</td>
+                    <td>@(item.MaCvNavigation.TenCv)</td>
+                    <td>@(item.MaCvNavigation.LuongCanBan)<sup class="set-dollar">vnđ</sup></td>
+                    <td>
+                      @{var nhanVien = $"{item.HoTen}-{item.Cccd}-{item.GioiTinh.Value}-{item.NgaySinh.Value}-{item.Email}-{(DateTime.Now.Year - item.NgaySinh.Value.Year)}-{item.SoDt}-{item.MaCvNavigation.TenCv}-{item.DiaChi}-{item.MaCvNavigation.LuongCanBan}-{item.UserName}-{item.NgayVaoLam.Value}-{item.HinhAnh.ToString().Trim()}";}
+
+                        <input id='NhanVien@(item.MaNv)' type="text" value='@(nhanVien)' hidden>
+                        <a class="btn btn-sm btn-outline-info rounded" onclick="ChiTietNhanVien(@(item.MaNv.ToString()))" value='@(nhanVien)'>Chi Tiết</a>
+                        @if (item.NhanVienNghiViecs.Where(nvnv => nvnv.MaNv == item.MaNv).FirstOrDefault() == null)
+                        {
+                            <a class="btn btn-sm btn-outline-danger rounded"  onclick="thoiViecNV(@(item.MaNv))" data-bs-target="#modelThoiViecNV" data-bs-toggle="modal">Thôi việc</a>
+                        }
+                        else
+                        {
+                            <a type="text" class="badge rounded-pill text-bg-secondary" disabled>Đã nghỉ việc</a>
+                        }
+                    </td>
+                </tr>
+            }
+            
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade rounded" id="modelThoiViecNV" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered rounded">
+    <form action="NhanVienNghiViec/ConfirmThoiViecNV" method="post">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h1 class="modal-title fs-5 text-dark" id="staticBackdropLabel">Thôi việc</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+            <input id="MaNv" type="text" name="MaNv" class="form-control" hidden>
+            <label for="LyDo" class="form-label">Lý do thôi việc</label>
+            <textarea onchange="ganValue()" class="form-control" name="txtLyDo" id="idLyDo" rows="3"></textarea>
+            <input type="text" id="LyDo" name="LyDo" class="form-control" hidden>
+            <span class="text-danger errormessage lbLyDo"></span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-outline-secondary rounded" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="btnConfirmThoiViec" class="btn btn-sm btn-outline-success rounded">Xác nhận</button>
+      </div>
+    </div>
+     </form>
+  </div>
+</div>
+
+
+<div class="modal fade" id="chiTietNhanVienModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Thông tin chi tiết của nhân viên</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+                        <div class="row">
+                          <section class="section about-section gray-bg" id="about">
+                              <div class="container">
+                                  <div class="row align-items-center flex-row-reverse">
+                                      <div class="col-lg-6">
+                                          <div class="about-text go-to">
+                                              <h3 class="text-info">Thông tin</h3>
+                                              <h6 class="theme-color lead">Là nhân viên của Hotel Royal</h6>
+                                              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Neque, quae dignissimos. Explicabo
+                                                  ut iusto reiciendis ex! Placeat recusandae suscipit odit, cum fugit dolores totam inventore
+                                                  dolorem sint commodi quis ipsum</p>
+                                              <div class="row about-list">
+                                                  <div class="col-md-6">
+                                                      <div class="media">
+                                                          <label class="text-info">Họ tên</label>
+                                                          <p id="INFONHANVIEN0">Võ văn thành</p>
+                                                      </div>
+                                                      <div class="media">
+                                                          <label class="text-info">CCCD/CMND</label>
+                                                          <p id="INFONHANVIEN1">4th april 1998</p>
+                                                      </div>
+                                                      <div class="media">
+                                                          <label class="text-info">Giới tính</label>
+                                                          <p id="INFONHANVIEN2">22 Yr</p>
+                                                      </div>
+                                                      <div class="media">
+                                                          <label class="text-info">Ngày sinh</label>
+                                                          <p id="INFONHANVIEN3">Canada</p>
+                                                      </div>
+                                                      <div class="media">
+                                                          <label class="text-info">E-Mail</label>
+                                                          <p id="INFONHANVIEN4">California, USA</p>
+                                                      </div>
+                                                      <div class="media">
+                                                          <label class="text-info">Tuổi</label>
+                                                          <p id="INFONHANVIEN5">Cử nhân đại học</p>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-md-6">
+                                                    <div class="media">
+                                                          <label class="text-info">Số điện thoại</label>
+                                                          <p id="INFONHANVIEN6">Nam</p>
+                                                      </div>
+                                                      <div class="media">
+                                                          <label class="text-info">Chức vụ</label>
+                                                          <p id="INFONHANVIEN7">info@domain.com</p>
+                                                      </div>
+                                                      <div class="media">
+                                                          <label class="text-info">Địa chỉ</label>
+                                                          <p class="text-break" id="INFONHANVIEN8">820-885-3321</p>
+                                                      </div>
+                                                      <div class="media">
+                                                          <label class="text-info">Lương cơ bản</label>
+                                                          <p id="INFONHANVIEN9">skype.0404</p>
+                                                      </div>
+                                                      <div class="media">
+                                                          <label class="text-info">Tài khoản</label>
+                                                          <p id="INFONHANVIEN10">Cử nhân đại học</p>
+                                                      </div>
+                                                      <div class="media">
+                                                          <label class="text-info">Ngày vào làm</label>
+                                                          <p id="INFONHANVIEN11">Cử nhân đại học</p>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-lg-6">
+                                          <div class="about-avatar" id="avatarNhanVien" style="width: 100%; height: 350px;">
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="counter">
+                                      <div class="row">
+                                          <div class="col-6 col-lg-3">
+                                              <div class="count-data text-center">
+                                                  <h6 class="count h2" data-to="500" data-speed="500">500</h6>
+                                                  <p class="m-0px font-w-600">Số gày làm </p>
+                                              </div>
+                                          </div>
+                                          <div class="col-6 col-lg-3">
+                                              <div class="count-data text-center">
+                                                  <h6 class="count h2" data-to="150" data-speed="150">150</h6>
+                                                  <p class="m-0px font-w-600">Số ngày trễ</p>
+                                              </div>
+                                          </div>
+                                          <div class="col-6 col-lg-3">
+                                              <div class="count-data text-center">
+                                                  <h6 class="count h2" data-to="850" data-speed="850">850</h6>
+                                                  <p class="m-0px font-w-600">Số ngày nghỉ</p>
+                                              </div>
+                                          </div>
+                                          <div class="col-6 col-lg-3">
+                                              <div class="count-data text-center">
+                                                  <h6 class="count h2" data-to="190" data-speed="190">190</h6>
+                                                  <p class="m-0px font-w-600">Số đơn thanh toán</p>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </section>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+
+
+
+
+@section Scripts{
+    <link rel="stylesheet" href="~/DataTables/datatables.css">
+    <script src="~/DataTables/datatables.js"></script>
+    <script src="~/js/exportExcel.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#myTable').dataTable({
+                "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+                "iDisplayLength": 25
+            });
+        });
+
+        function thoiViecNV(id) {
+            $('#modelThoiViecNV').modal('show');
+            $('#MaNv').val(id);
+            $('#btnConfirmThoiViec').click(function(){
+                confirmThoiViecNV();
+            });
+        }
+
+        function confirmThoiViecNV()
+        {
+            if ($('#idLyDo').val() === "")
+            {
+                $('.lbLyDo').text("Lý do không được để trống!");
+            }
+        }
+
+        $('#btnConfirmThoiViec').on('click', function(e){
+            console.log('da click');
+            if ($('#idLyDo').val() === "")
+            {
+                $('.lbLyDo').text("Lý do không được để trống!");
+            }
+            else
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '/NhanVienNghiViec/ConfirmThoiViecNV',
+                    data: {MaNv: $('#MaNv').val(), LyDo: $('#LyDo').val()},
+                    success: function (data) {
+                        alert(data);
+                    },
+                    error: function (xhr) {
+                        alert('error');
+                    }
+
+                });
+            }
+        });
+
+        function ganValue()
+        {
+            $('#LyDo').val($('#idLyDo').val());
+        }
+
+
+        function ChiTietNhanVien(MaNv)
+        {
+          $('#chiTietNhanVienModal').modal('show');
+          var strNhanVien = ($('#NhanVien'+MaNv).val());
+          var kq = [];
+          kq = strNhanVien.split('-');
+          @* var HoTen = kq[0];
+          var Cccd = kq[1];
+          var GioiTinh  = kq[2];
+          var NgaySinh  = kq[3];
+          var Email  = kq[4];
+          var NgaySinh  = kq[5];
+          var SoDt  = kq[6];
+          var TenCv  = kq[7];
+          var DiaChi  = kq[8];
+          var LuongCanBan  = kq[9];
+          var UserName  = kq[10];
+          var NgayVaoLam = kq[11]; *@
+          for(let i = 0 ; i < (kq.length - 1) ; i++)
+          {
+            $('#INFONHANVIEN' + i).text(kq[i]);
+            console.log(kq[i]);
+          }
+            var anh = kq[12] === "" ? "noimage.jpg" : kq[12];                         
+          document.getElementById('avatarNhanVien').innerHTML = `<img src="/Images/NhanVien/${anh}" id="anhNhanVien" class="rounded-4" width="100%" height="100%" title="" alt="code by TamHoang">`
+          
+          @* console.log(anh);
+          document.getElementById('#anhNhanVien').src = '~/Images/NhanVien/'+anh; *@
+        }
+    </script>
+}

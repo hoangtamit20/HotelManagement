@@ -1,0 +1,229 @@
+@model HoaDonModel;
+@{
+    var nvModel = ViewBag.NhanVien as NhanVienModel;
+    var datPhongModel = ViewBag.DatPhong as DatPhongModel;
+    var hoaDonModel = ViewBag.HoaDon as HoaDonModel;
+    var listDatDichVu = ViewBag.ListDatDichVu as List<DatDichVuModel>;
+    decimal tongTienDichVu = ViewBag.TongTienDichVu == null ? 0 : ViewBag.TongTienDichVu;
+}
+
+@if(ViewBag.ThongBaoLoi != null)
+{
+    <div class="alert alert-danger errormessage">@ViewBag.ThongBaoLoi</div>
+}
+
+@if(ViewBag.ThongBaoThanhCong != null)
+{
+    <div class="alert alert-success errormessage">@ViewBag.ThongBaoThanhCong</div>
+}
+
+@if (nvModel != null && datPhongModel != null)
+{
+    <div class="row mb-3 mt-5">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-left">
+                    <form asp-action="GeneratePDF" id="formPDF">
+                        <input id="pdfValue" name="html" hidden>
+                        <div class="text">
+                            <button type="button" class="btn btn-outline-secondary"><i class="bi bi-printer text-info"></i> Print</button>
+                            <button id="btnPdf" type="button" class="btn btn-outline-success"><i class="bi bi-filetype-pdf text-danger"></i>
+                                    Xuất hóa đơn</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="right d-flex justify-content-end">
+                    <form asp-action="ThanhToanHoaDon">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input value='@(datPhongModel != null ? datPhongModel.MaDp : "")' asp-for="MaDp" hidden>
+                        <input asp-for="NgayHoaDon" value='@(DateTime.Now.ToString("yyyy-MM-ddTHH:mm"))' class="form-control" hidden/>
+                        <input asp-for="MaNv" value="@(nvModel.MaNv)" class="form-control" hidden/>
+                        <input asp-for="TongTienPhong" value="@(ViewBag.TongTienPhong == null ? 0 : ViewBag.TongTienPhong)" class="form-control" hidden/>
+                        <input asp-for="TongTienDichVu" value='@(tongTienDichVu)' class="form-control" hidden/>
+                        <input asp-for="TongTien" value='@((ViewBag.TongTienPhong == null ? 0 : ViewBag.TongTienPhong) + tongTienDichVu - datPhongModel.TienDatCoc.Value)' class="form-control" hidden/>
+                        @if (hoaDonModel != null)
+                        {
+                            @Html.ActionLink("Quay lui", "Index", "DatPhong", null, new {@class = "btn btn-transperent border-light border-2 text-capitalize"})
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-outline-primary text-capitalize"
+                            ><i class="bi bi-wallet2"></i> Thanh Toán</button>
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+    <hr>
+
+
+<div class="row">
+    <div class="col-2" style="width: ;"></div>
+    <div class="col-8">
+        <div class="row printPDF" id="pdfContainer">
+            <div class="row">
+                <div class="col-3 d-flex justify-content-center">
+                    <img src="~/Images/Phong/phongdoi.jpg" alt="Code by TamHoang" class="rounded-circle" width="150px" height="150px">
+                </div>
+                <div class="col-9 text-center">
+                    <h2>Khách sạn Royal</h2>
+                    <i><p class="m-0 p-0">Số 102 đường Hai Mươi Tám Tháng Ba, Thanh Hà, Hội An, Quảng Nam</p>
+                    <p>Tel : (+84) 369450059</p></i>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <h2>HÓA ĐƠN ĐẶT PHÒNG</h2>
+            </div>
+            <hr class="mt-4">
+            <div class="row">
+                <div class="col-3">
+                    <p class="mb-1">Khách hàng : </p>
+                    <p class="mb-1">Điện thoại : </p>
+                    <p class="mb-1">Số phòng : </p>
+                    <p class="mb-1">Loại phòng : </p>
+                    <p class="mb-1">Ngày đặt phòng : </p>
+                    <p class="mb-1">Giá phòng : </p>
+                </div>
+                <div class="col-3">
+                    <p class="mb-1">@(datPhongModel.MaKhNavigation.HoTen)</p>
+                    <p class="mb-1">@(datPhongModel.MaKhNavigation.SoDt)</p>
+                    <p class="mb-1">@(datPhongModel.MaPNavigation.SoPhong)</p>
+                    <p class="mb-1">@(datPhongModel.MaPNavigation.MaLpNavigation.TenLp)</p>
+                    <p class="mb-1">@(datPhongModel.NgayBatDau.Value)</p>
+                    <p class="mb-1">@(String.Format("{0:#,#}",datPhongModel.MaPNavigation.MaLpNavigation.DonGia.Value))<small> VNĐ</small></p>
+                </div>
+                <div class="col-3">
+                    <p class="mb-1">Thu ngân : </p>
+                    <p class="mb-1">Số hóa đơn : </p>
+                    <p class="mb-1">Ngày hóa đơn : </p>
+                    <p class="mb-1">Thời gian sử dụng : </p>
+                    <p class="mb-1">Ngày trả phòng : </p>
+                    <p class="mb-1">Trạng thái : </p>
+                </div>
+                <div class="col-3">
+                    <p class="mb-1">@(nvModel.HoTen)</p>
+                    <p class="mb-1">HD@(hoaDonModel != null ? hoaDonModel.MaHddp : datPhongModel.MaDp)-KH@(datPhongModel.MaKh)</p>
+                    <p class="mb-1">@(hoaDonModel != null ? hoaDonModel.NgayHoaDon.Value : DateTime.Now)</p>
+                    @if (hoaDonModel != null)
+                    {
+                        <p class="mb-1">@((hoaDonModel.NgayHoaDon.Value - datPhongModel.NgayBatDau.Value).Days) Ngày @((hoaDonModel.NgayHoaDon.Value - datPhongModel.NgayBatDau.Value).Hours) giờ @((hoaDonModel.NgayHoaDon.Value - datPhongModel.NgayBatDau.Value).Minutes) phút</p>
+                    }
+                    else
+                    {
+                        <p class="mb-1">@((DateTime.Now - datPhongModel.NgayBatDau.Value).Days) Ngày @((DateTime.Now - datPhongModel.NgayBatDau.Value).Hours) giờ @((DateTime.Now - datPhongModel.NgayBatDau.Value).Minutes) phút</p>
+                    }
+                    <p class="mb-1">@(datPhongModel.NgayKetThuc.Value)</p>
+                    <p class='mb-1 badge text-bg-@(hoaDonModel != null ? "success" : "warning")'>@(hoaDonModel != null ? "Đã thanh toán" : "Chưa thanh toán")</p>
+                </div>
+            </div>
+            <hr>
+            <table class="table table-hover">
+                <thead class="table-info">
+                    <tr>
+                    <th scope="">#</th>
+                    <th scope="">Tên dịch vụ</th>
+                    <th scope="">Ngày đặt</th>
+                    <th scope="">Số lượng</th>
+                    <th scope="" class="text-center">Đơn giá</th>
+                    <th scope="" class="text-center">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int soTT = 1;
+                        if (listDatDichVu != null)
+                        {
+                            foreach (var item in listDatDichVu)
+                            {
+                                <tr>
+                                    @if (item.MaDvNavigation != null)
+                                    {
+                                        if (tongTienDichVu == 0)
+                                        {
+                                            tongTienDichVu += item.TongTien == null ? 0 : item.TongTien.Value;
+                                        }
+                                        <td scope="row">@(soTT++)</td>
+                                        <td>@item.MaDvNavigation.TenDv</td>
+                                        <td>@item.NgayDatDichVu</td>
+                                        <td style="text-align: center;">@item.SoLuong</td>
+                                        <td class="text-end">@(String.Format( "{0:#,#}", item.TongTien == null ? 0 : item.SoLuong == null ? 0 : item.TongTien.Value/item.SoLuong.Value)) <small>VNĐ</small></td>
+                                        <td class="text-end">@String.Format( "{0:#,#}",item.TongTien) <small>VNĐ</small></td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+            <hr>
+            <div class="row">
+                <div class="col-7"></div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-6 m-0 p-0">
+                            <p class="mb-1">Tổng tiền phòng : </p>
+                            <p class="mb-1">Tổng dịch vụ : </p>
+                            <hr class="p-0 m-0">
+                            <p class="mb-1">Tiền cọc : </p>
+                            <hr class="border border-dark">
+                            <p class="mb-1"><strong>Tổng tiền : </strong></p>
+                        </div>
+                        <div class="col-6 m-0 p-0 text-end">
+                            <p class="mb-1">@(String.Format( "{0:#,#}", hoaDonModel != null ? hoaDonModel.TongTienPhong : ViewBag.TongTienPhong == null ? 0 : ViewBag.TongTienPhong)) <small>VNĐ</small></p>
+                            <p class="mb-1">@(String.Format( "{0:#,#}", tongTienDichVu )) <small>VNĐ</small></p>
+                            <hr class="p-0 m-0">
+                            <p class="mb-1">@String.Format( "{0:#,#}",datPhongModel.TienDatCoc.Value) <small> VNĐ</small></p>
+                            <hr class="border border-dark">
+                            <p class="mb-1"><strong>@(String.Format( "{0:#,#}", (hoaDonModel != null ? hoaDonModel.TongTien.Value : (ViewBag.TongTienPhong == null ? 0 : ViewBag.TongTienPhong) + tongTienDichVu - datPhongModel.TienDatCoc.Value))) <small> VNĐ</small></strong></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-1"></div>
+            </div>
+            <hr>
+            <div class="row">
+                <span style="font-style: italic;"> * Đã bao gồm thuế VAT</span>
+                <div class="col-2"></div>
+                <div class="col-8 d-flex justify-content-between">
+                    <div class="div">
+                        <div class="text-center">
+                            <strong>Khách hàng</strong>
+                            <p class="m-0 p-0"><i>(ký và ghi rõ họ tên)</i></p>
+                        </div>
+                    </div>
+                    <div class="div">
+                        <div class="text-center">
+                            <strong>Thu ngân</strong>
+                            <p class="m-0 p-0"><i>(ký và ghi rõ họ tên)</i></p>
+                        </div>
+                    </div>
+                </div>
+                <p></p><p></p>
+                <div class="info-footer" style="width: 100%; text-align: center; margin-top: 20px;">
+                        <p style="padding: 0; margin: 0;">Giờ in : <i>@(DateTime.Now)</i></p>
+                        <i class="bi bi-wifi">Passwifi : codemetthinghi</i>
+                        <h6><i>Xin cảm ơn và hẹn gặp lại!</i> <i class="bi bi bi-heart"></i></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-2"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js" ></script>
+<script src="~/js/printHoaDon.js"></script>
+}
+else
+{
+    if(ViewBag.ThongBaoLoi != null)
+    {
+        <div class="alert alert-danger errormessage">@ViewBag.ThongBaoLoi</div>
+    }
+    if (nvModel == null)
+    {
+        <div class="alert alert-danger errormessage">Bạn cần đăng nhập</div>
+    }
+}

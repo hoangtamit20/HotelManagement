@@ -1,0 +1,371 @@
+@model QLKSMVC.Models.AccountModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@if(ViewBag.phanQuyenErrorMessage != null)
+{
+    <div style="color: red;" class="alert alert-danger d-flex justify-content-center errormessage" role="alert">
+        @ViewBag.phanQuyenErrorMessage
+    </div>
+}
+
+<h1 class="text-center mt-5 mb-3">Danh sách tài khoản</h1>
+<hr>
+
+<p>
+    <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ModalCreate">Tạo mới</a>
+</p>
+<table class="table" id="myTable">
+    <thead class="table-info">
+        <tr style="font-size: 13px;">
+            <th>Tên đăng nhập</th>
+            <th>Mật khẩu</th>
+            <th>Đăng nhập sai</th>
+            <th>Khóa tài khoản</th>
+            <th>Email</th>
+            <th>SĐT</th>
+            <th>Ngày tạo</th>
+            <th>Ngày cập nhập</th>
+            <th>Phân quyền</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewBag.ListAccount != null)
+        {
+            foreach (var item in (ViewBag.ListAccount as List<AccountModel>))
+            {
+                <tr>
+                    <td>@(item.UserName)</td>
+                    <td>@(item.UserPassword)</td>
+                    <td>@(item.CountLoginFailed == null ? "0" : item.CountLoginFailed.Value)</td>
+                    <td>@(item.TimeLockOut == null ? "" : item.TimeLockOut.Value)</td>
+                    <td>@(item.Email)</td>
+                    <td>@(item.Phone)</td>
+                    <td>@(item.DateCreate == null ? "" : item.DateCreate.Value)</td>
+                    <td>@(item.DateUpdate == null ? "" : item.DateUpdate.Value)</td>
+                    <td>@(item.RoleIdNavigation == null ? "" : item.RoleIdNavigation.RoleName)</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="UpdateAccount(@(item.Id))">Update</button>
+                        @* <button class="btn btn-sm btn-outline-secondary" >Details</button> *@
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <p class="text-danger">Danh sách rỗng!</p>
+        }
+    </tbody>
+</table>
+
+
+<!-- Modal Create-->
+<div class="modal fade" id="ModalCreate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: rgb(218, 228, 248) !important;">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Tạo mới tài khoản</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formCreateAccount">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10 p-5 rounded"
+                            style="box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px 0px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px 0px inset;">
+                            <div asp-validation-summary="ModelOnly" class="text-danger errormessage"></div>
+                            <div id="divErrorMessage">
+                                <ul class="alert alert-danger errormessage">
+
+                                </ul>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserName" class="control-label"></label>
+                                <input asp-for="UserName" class="form-control ip1" />
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserPassword" class="control-label"></label>
+                                <input asp-for="UserPassword" type="password" class="form-control" />
+                                <span asp-validation-for="UserPassword" class="text-danger"></span>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="CountLoginFailed" class="control-label"></label>
+                                <input asp-for="CountLoginFailed" value="0" class="form-control ip3" />
+                                <span asp-validation-for="CountLoginFailed" class="text-danger"></span>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="TimeLockOut" class="control-label"></label>
+                                <input asp-for="TimeLockOut" class="form-control ip4" />
+                                <span asp-validation-for="TimeLockOut" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Phone" class="control-label"></label>
+                                <input asp-for="Phone" class="form-control" />
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="DateCreate" class="control-label"></label>
+                                <input asp-for="DateCreate" value='@(DateTime.Now.ToString("yyyy-MM-ddTHH:mm"))'
+                                    class="form-control" readonly />
+                                <span asp-validation-for="DateCreate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="DateUpdate" class="control-label"></label>
+                                <input asp-for="DateUpdate" class="form-control" />
+                                <span asp-validation-for="DateUpdate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="RoleId" class="control-label"></label>
+                                <select asp-for="RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" id="btnCreateSubmit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Modal Edit -->
+<div class="modal fade" id="ModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: rgb(218, 228, 248) !important;">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Cập nhật tài khoản</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8 p-5 rounded"
+                        style="box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px 0px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px 0px inset;">
+                        <form asp-action="Edit">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input asp-for="Id" hidden id="Acc0" />
+                            <div class="form-group">
+                                <label asp-for="UserName" class="control-label"></label>
+                                <input id="Acc1" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserPassword" class="control-label"></label>
+                                <input id="Acc2" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="CountLoginFailed" class="control-label"></label>
+                                <input id="Acc3" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TimeLockOut" class="control-label"></label>
+                                <input id="Acc4" type="datetime-local" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>
+                                <input id="Acc5" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Phone" class="control-label"></label>
+                                <input id="Acc6" class="form-control" />
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="DateCreate" class="control-label"></label>
+                                <input id="Acc7" readonly type="datetime-local" class="form-control" />
+                            </div>
+                            <div class="form-group" hidden>
+                                <label asp-for="DateUpdate" class="control-label"></label>
+                                <input id="Acc8" type="datetime-local" readonly
+                                    value='@(DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"))' class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="RoleId" class="control-label"></label>
+                                <select id="Acc9" class="form-control" asp-items="ViewBag.RoleId"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" id="btnUpdateSubmit" class="btn btn-primary">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toast-success" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive"
+        aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="tSuccess">
+                OK!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toast-error" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive"
+        aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Không tìm thấy Id phù hợp!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <link rel="stylesheet" href="~/DataTables/datatables.css">
+    <script src="~/DataTables/datatables.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#myTable').dataTable({
+                "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+                "iDisplayLength": 25
+            });
+        });
+
+        $('#btnCreateSubmit').click((e) => {
+            console.log('OK');
+            $.ajax(
+                {
+                    type: "POST",
+                    url: "/Account/Create",
+                    data: {
+                        UserName: $('[name=UserName]').val(),
+                        UserPassword: $('[name=UserPassword]').val(),
+                        CountLoginFailed: $('[name=CountLoginFailed]').val(),
+                        TimeLockOut: $('[name=TimeLockOut]').val(),
+                        Email: $('[name=Email]').val(),
+                        Phone: $('[name=Phone]').val(),
+                        DateCreate: $('[name=DateCreate]').val(),
+                        DateUpdate: $('[name=DateUpdate]').val(),
+                        RoleId: $('[name=RoleId]').find(":selected").val()
+                    },
+                    success: function (data) {
+                        var s;
+                        const ul = document.querySelector('#divErrorMessage');
+                        if (data.length > 0) {
+                            var s = "";
+                            for (let i = 0; i < data.length; i++) {
+                                const li = document.createElement('li');
+                                li.innerHTML = data[i];
+                                ul.appendChild(li);
+                            }
+                        }
+                        else {
+                            alert("Tạo tài khoản thành công!");
+                        }
+                    },
+                    error: function (data) {
+                        $('#result').html(response);
+                    }
+                });
+
+        });
+
+
+        var UpdateAccount = function (id) {
+            $.ajax({
+                type: 'POST',
+                url: '/Account/GetDataEdit',
+                data: { Id: id },
+                success: function (accountModel) {
+                    const toastSuccess = document.getElementById('toast-success');
+                    const toastError = document.getElementById('toast-error');
+                    if (accountModel != -1) {
+                        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastSuccess);
+                        toastBootstrap.show();
+                        console.log(accountModel);
+                        $('#ModalEdit').modal('show');
+                        $('#Acc0').val(accountModel.id);
+                        $('#Acc1').val(accountModel.userName);
+                        $('#Acc2').val(accountModel.userPassword);
+                        $('#Acc3').val(accountModel.countLoginFailed);
+                        $('#Acc4').val(accountModel.timeLockOut);
+                        $('#Acc5').val(accountModel.email);
+                        $('#Acc6').val(accountModel.phone);
+                        $('#Acc7').val(accountModel.dateCreate);
+                        @* $('#Acc8').val(accountModel.dateUpdate); *@
+                        $('#Acc9').val(accountModel.roleId).change();
+                    }
+                    else {
+                        
+                        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastError);
+                        toastBootstrap.show();
+                    }
+                },
+                error: function (data) {
+
+                }
+            });
+        }
+
+
+
+        $('#btnUpdateSubmit').click((e) => {
+            $.ajax(
+                {
+                    type: "POST",
+                    url: "/Account/Update",
+                    data: {
+                        Id: $('#Acc0').val(),
+                        UserName: $('#Acc1').val(),
+                        UserPassword: $('#Acc2').val(),
+                        CountLoginFailed: $('#Acc3').val(),
+                        TimeLockOut: $('#Acc4').val(),
+                        Email: $('#Acc5').val(),
+                        Phone: $('#Acc6').val(),
+                        DateCreate: $('#Acc7').val(),
+                        DateUpdate: $('#Acc8').val(),
+                        RoleId: $('#Acc9').find(":selected").val()
+                    },
+                    success: function (data) {
+                        var s;
+                        const ul = document.querySelector('#divErrorMessage');
+                        if (data.length > 0) {
+                            var s = "";
+                            for (let i = 0; i < data.length; i++) {
+                                const li = document.createElement('li');
+                                li.innerHTML = data[i];
+                                ul.appendChild(li);
+                            }
+                        }
+                        else {
+                            const toastSuccess = document.getElementById('toast-success');
+                            const toastError = document.getElementById('toast-error');
+                            $('#tSuccess').text("Cập nhật tài khoản thành công!");
+                            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastSuccess);
+                            toastBootstrap.show();
+                        }
+                    },
+                    error: function (data) {
+                        $('#result').html(response);
+                    }
+                });
+
+        });
+    </script>
+}

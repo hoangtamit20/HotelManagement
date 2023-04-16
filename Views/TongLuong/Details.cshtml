@@ -1,0 +1,134 @@
+@model QLKSMVC.Models.TongLuongModel
+
+@{
+    ViewData["Title"] = "Chi tiết lương nhân viên";
+    var dem = 0;
+}
+
+<div class="div" id="pdfContainer" style="width: 100%;">
+    <div class="row w-100">
+        <h1 class="text-center mt-3 mb-5">Chi Tiết Lương Nhân Viên Tháng @(Model.NgayNhanLuong.Value.Month) Năm
+            @(Model.NgayNhanLuong.Value.Year)</h1>
+        <form asp-action="GeneratePDF" id="formPDF">
+            <input id="pdfValue" name="html" hidden>
+            <div class="text-end">
+                <button type="button" class="btn btn-outline-secondary"><i class="bi bi-printer text-info"></i>
+                    Print</button>
+                <button id="btnPdf" type="button" class="btn btn-outline-success"><i
+                        class="bi bi-filetype-pdf text-danger"></i>
+                    Xuất hóa đơn</button>
+            </div>
+        </form>
+        <h6 class="text-info">Thông tin cơ bản</h6>
+        <hr />
+        <div class="row">
+            <div class="col-md-6 col-sm-12 d-flex justify-content-between">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="label">
+                            <p>Họ tên : </p>
+                            <p>Ngày sinh : </p>
+                            <p>Giới tính : </p>
+                            <p>Tuổi : </p>
+                            <p>Email : </p>
+                            <p>Địa chỉ : </p>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="info">
+                            <p>@(Model.MaNvNavigation.HoTen)</p>
+                            <p>@(Model.MaNvNavigation.NgaySinh.Value.ToShortDateString())</p>
+                            <p>@(Model.MaNvNavigation.GioiTinh.Value == true ? "Nam" : "Nữ")</p>
+                            <p>@(DateTime.Now.Year - Model.MaNvNavigation.NgaySinh.Value.Year) tuổi</p>
+                            <p>@(Model.MaNvNavigation.Email)</p>
+                            <p class="text-break">@(Model.MaNvNavigation.DiaChi)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1 col-sm-0"></div>
+            <div class="col-md-5 col-sm-12 d-flex justify-content-between">
+                <div class="label">
+                    <p>Lương căn bản : </p>
+                    <p>Số ngày làm : </p>
+                    <p>Số tiền ứng : </p>
+                    <p>Ngày ứng : </p>
+                    <p>Ngày nhận lương : </p>
+                    <p>Tổng lương : </p>
+                </div>
+                <div class="info">
+                    <p>@(String.Format("{0:#,#}", Model.MaNvNavigation.MaCvNavigation.LuongCanBan))<sup
+                            class="set-dollar">vnđ</sup></p>
+                    <p>@(Model.SoNgayLam.Value)</p>
+                    <p>@(String.Format("{0:#,#}", Model.UngLuong.Value))<sup class="set-dollar">vnđ</sup></p>
+                    <p>@(Model.NgayUngLuong.Value)</p>
+                    <p>@(Model.NgayNhanLuong.Value)</p>
+                    <p><strong>@(String.Format("{0:#,#}", Model.TongTien.Value))<sup
+                                class="set-dollar">vnđ</sup></strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <h6 class="text-info">Thông tin chi tiết chấm công</h6>
+            <table class="table text-center">
+                <thead>
+                    <tr style="font-style: 13px;">
+                        <th>#</th>
+                        <th>Ngày</th>
+                        <th>Giờ đi làm</th>
+                        <th>Giờ ra về</th>
+                        <th>Đi làm trễ</th>
+                        <th>Ra về sớm</th>
+                        <th>Xin nghỉ phép</th>
+                        <th>Lý do nghỉ phép</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.MaNvNavigation.ChamCongNhanViens.Where(cc => cc.MaNv == Model.MaNv &&
+                    cc.NgayGioDiLam.Value.Month == Model.NgayNhanLuong.Value.Month && cc.NgayGioDiLam.Value.Year ==
+                    Model.NgayNhanLuong.Value.Year).ToList())
+                    {
+                        <tr>
+                            <td>@(++dem)</td>
+                            <td>@(item.NgayGioDiLam != null ? item.NgayGioDiLam.Value.ToShortDateString() : "")</td>
+                            <td>@(item.NgayGioDiLam != null ? item.NgayGioDiLam.Value.TimeOfDay : "")</td>
+                            <td>@(item.NgayGioDiLam != null ? item.NgayGioRaVe.Value.TimeOfDay : "")</td>
+                            <td>@(item.DiLamTre.Value == true ? "Trễ" : "Không")</td>
+                            <td>@(item.RaVeSom.Value == true ? "Sớm" : "Không")</td>
+                            <td>@(item.XinNghiPhep.Value == true ? "Có" : "Không")</td>
+                            <td>@(item.LyDoNghi != null ? item.LyDoNghi : "Không")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Index"><i class="bi bi-arrow-left"></i> Trở về</a>
+</div>
+
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script src="~/js/printHoaDon.js"></script>
+    <script>
+        const btnPdf = document.querySelector('#btnPdf');
+        btnPdf.addEventListener('click', (e) => {
+            e.preventDefault();
+            var element = document.querySelector('#pdfContainer');
+            var opt =
+            {
+                margin: 1,
+                filename: ('chitietluong') + (new Date()).toString() + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        });
+    </script>
+}

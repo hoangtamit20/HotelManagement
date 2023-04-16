@@ -1,0 +1,67 @@
+@model IEnumerable<QLKSMVC.Models.PhongModel>
+
+@{
+    ViewData["Title"] = "Index";
+    var dem = 0;
+}
+
+<h1 class="text-center mt-5 mb-3">Danh Sách Phòng</h1>
+
+<p>
+    <a class="btn btn-outline-primary" asp-action="Create">Thêm phòng mới</a>
+</p>
+<table class="table align-middle rounded-3 w-100" id="myTable">
+    <thead class="table-info rounded-3">
+        <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Hình ảnh</th>
+            <th class="text-center">Số phòng</th>
+            <th>Loại phòng</th>
+            <th>Đơn giá</th>
+            <th>Mô tả</th>
+            <th>Action</th>
+
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr style="height: 150px;">
+            <td class="text-center">@(++dem)</td>
+            <td style="height: 150px; width: 200px;">
+                <img class="rounded-3" src='~/Images/Phong/@(item.HinhAnh == null ? "noimage.jpg" : item.HinhAnh)' alt="Code by TamHoang" width="100%" height="100%" srcset="">
+            </td>
+            <td class="text-center">
+                @(item.SoPhong)
+            </td>
+            <td>
+                @(item.MaLpNavigation.TenLp)
+            </td>
+            <td>
+                @(item.MaLpNavigation.DonGia.Value) <small>vnđ</small>
+            </td>
+            <td>
+                @(item.MoTa == null ? "Không có" : item.MoTa)
+            </td>
+            <td>
+                <a asp-action="Edit" class="btn btn-sm btn-outline-warning" asp-route-id="@item.MaP">Cập nhật</a> |
+                <a asp-action="Details" class="btn btn-sm btn-outline-info" asp-route-id="@item.MaP">Chi tiết</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+@section Scripts{
+    <link rel="stylesheet" href="~/DataTables/datatables.css">
+    <script src="~/DataTables/datatables.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#myTable').dataTable({
+                "aLengthMenu": [[12, 30, 75, -1], [12, 30, 75, "All"]],
+                "iDisplayLength": 12
+            });
+        });
+    </script>
+
+}

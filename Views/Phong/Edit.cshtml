@@ -1,0 +1,71 @@
+@model QLKSMVC.Models.PhongModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@if(ViewBag.phanQuyenErrorMessage != null)
+{
+    <div style="color: red;" class="alert alert-danger d-flex justify-content-center errormessage" role="alert">
+        @ViewBag.phanQuyenErrorMessage
+    </div>
+}
+
+<h1 class="text-center mt-4 mb-1">Cập nhật thông tin phòng</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4 p-5 rounded-3" style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px 0px, rgba(0, 0, 0, 0.23) 0px 6px 6px 0px;">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaP" />
+            <div class="form-group">
+                <label asp-for="SoPhong" class="control-label"></label>
+                <input asp-for="SoPhong" class="form-control" />
+                <span asp-validation-for="SoPhong" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MoTa" class="control-label"></label>
+                <input asp-for="MoTa" class="form-control" />
+                <span asp-validation-for="MoTa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaLp" class="control-label"></label>
+                <select asp-for="MaLp" class ="form-control" asp-items="ViewBag.MaLp"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaTvp" class="control-label"></label>
+                <select asp-for="MaTvp" class ="form-control" asp-items="ViewBag.MaTvp"></select>
+            </div>
+            <div class="form-group mt-3 d-flex justify-content-between">
+                <div class="form-group" style="width: 60%; margin-right: 10px;">
+                    <label asp-for="HinhAnh" class="control-label"></label>
+                    <input asp-for="HinhAnh" class="form-control" type="file" hidden/>
+                    <input class="form-control" type="file" accept="image/png, image/gif, image/jpeg" asp-for="@Model.fileUpload" id="imageupload">
+                    <span class="text-danger" asp-validation-for="@Model.fileUpload"></span>
+                </div>
+                <div class="image-info" style="width: 40%;">
+                    <img style="width: 100%;" height="160px" src='~/Images/Phong/@(Model.HinhAnh == null ? "noimage.jpg" : Model.HinhAnh)' class="rounded-3" alt="" id="imageprofile">
+                </div>
+            </div>
+            <div class="form-group mt-4 text-center d-flex justify-content-between">
+                <a asp-action="Index">Back to List</a>
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        $("#imageupload").change(function (event) {
+            var files = event.target.files;
+            $("#imageprofile").attr("src", window.URL.createObjectURL(files[0]));
+        });
+    </script>
+}
+
+

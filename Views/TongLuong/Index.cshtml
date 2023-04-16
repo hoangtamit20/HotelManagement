@@ -1,0 +1,101 @@
+@model IEnumerable<QLKSMVC.Models.TongLuongModel>
+
+@{
+    ViewData["Title"] = "Index";
+    var dem = 0;
+}
+
+<h1 class="mt-3">Danh Sách Lương Nhân Viên Tháng Năm</h1>
+<hr class="border border-primary mt-3 mb-5">
+<form class="row g-3 d-flex justify-content-around" asp-action="Index">
+    <div class="row">
+        <div class="col-auto">
+            <input type="text" name="datepicker" readonly id="datepicker" class="form-control border-1 border-success" autocomplete="off"
+                placeholder="dd/MM/yyyy">
+        </div>
+        <div class="col-auto">
+            <button type="submit" id="btnSearch" class="btn btn-primary mb-3">Tìm</button>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-outline-success mb-2" id="btnExportExcel" onclick="fnExcelReport();"><i
+                    class="bi bi-file-earmark-excel text-warning"></i> Xuất File Excel</button>
+        </div>
+    </div>
+
+
+</form>
+<table class="table" id="myTable">
+    <thead class="table-info">
+        <tr style="font-size: 12px;">
+            <th>#</th>
+            <th>Tên nhân viên</th>
+            <th>Chức vụ</th>
+            <th class="text-center">Số ngày làm</th>
+            <th>Lương cơ bản</th>
+            <th>Tiền ứng</th>
+            <th>Ngày ứng lương</th>
+            @* <th>Số ngày làm</th> *@
+            <th>Ngày nhận lương</th>
+            <th>Tổng lương</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@(++dem)</td>
+                <td>@(item.MaNvNavigation.HoTen)</td>
+                <td>@(item.MaNvNavigation.MaCvNavigation.TenCv)</td>
+                <td class="text-center">@(item.SoNgayLam.Value)</td>
+                <td>@(String.Format("{0:#,#}", item.MaNvNavigation.MaCvNavigation.LuongCanBan))<sup
+                        class="set-dollar">vnđ</sup></td>
+                <td>@(String.Format("{0:#,#}", item.UngLuong.Value))<sup class="set-dollar">vnđ</sup></td>
+                <td>@(item.NgayUngLuong.Value)</td>
+                @* <td>@(item.SoNgayLam.Value)</td> *@
+                <td>@(item.NgayNhanLuong.Value)</td>
+                <td>@(String.Format("{0:#,#}", item.TongTien.Value))<sup class="set-dollar">vnđ</sup></td>
+
+                <td>
+                    <a asp-action="Details" class="btn btn-outline-secondary btn-sm rounded" asp-route-id="@item.MaTl">Chi
+                        Tiết</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts{
+    <link rel="stylesheet" href="~/DataTables/datatables.css">
+    <script src="~/DataTables/datatables.js"></script>
+    <script src="~/js/exportExcel.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#myTable').dataTable({
+                "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+                "iDisplayLength": 25
+            });
+        });
+
+        $("#datepicker").datepicker({
+            format: "mm-yyyy",
+            startView: "months",
+            minViewMode: "months"
+        });
+
+        $('#datepicker').val() === "" ? $('#btnSearch').hide() : $('#btnSearch').show();
+        $('#datepicker').change((e) => {
+            if ($('#datepicker').val() === "")
+            {
+                $('#btnSearch').hide();
+            }
+            else
+            {
+                $('#btnSearch').show();
+            }
+        });
+    </script>
+}

@@ -1,0 +1,138 @@
+@model IEnumerable<QLKSMVC.Models.DatPhongModel>
+
+@{
+    ViewData["Title"] = "Thay đổi đặt phòng";
+    var dem = 0;
+}
+
+<h1 class="text-center mt-5 mb-4">Danh sách thay đổi thông tin đặt phòng</h1>
+<hr>
+
+<table class="table" id="myTable">
+    <thead class="table-info">
+        <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Mã ĐP</th>
+            <th class="text-center">Số phòng</th>
+            <th>Khách hàng</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th>Tiền đặt cọc</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center">@(++dem)</td>
+                <td class="text-center">@(item.MaDp)</td>
+                <td class="text-center">@(item.MaPNavigation.SoPhong)</td>
+                <td>@(item.MaKhNavigation.HoTen)</td>
+                <td>@(item.NgayBatDau.Value)</td>
+                <td>@(item.NgayKetThuc.Value)</td>
+                <td>@(item.TienDatCoc.Value)<small>vnđ</small></td>
+                <td data-MaDp="@(item.MaDp)">
+                    <a asp-action="Edit" class="btn btn-sm btn-outline-primary" asp-route-id="@item.MaDp">Cập nhật</a>
+                    <a onclick="huyDatPhong(@(item.MaDp))" class="btn btn-sm btn-outline-danger">Hủy đặt</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<div class="modal" id="modalHuyDatPhong" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header p-2 bg-danger">
+                <h6 class="modal-title text-light">Hủy đặt phòng</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Bạn có chắc chắn hủy đặt phòng không ?</p>
+            </div>
+            <div class="modal-footer p-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                <input id="idMaDp" type="" hidden>
+                <button type="button" id="xoaDatPhong" class="btn btn-sm btn-outline-danger">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toast-success" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive"
+        aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Hủy đặt phòng thành công!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toast-error" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive"
+        aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Hủy đặt phòng thất bại!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <link rel="stylesheet" href="~/DataTables/datatables.css">
+    <script src="~/DataTables/datatables.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#myTable').dataTable({
+                "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+                "iDisplayLength": 25
+            });
+        });
+
+
+        function huyDatPhong(MaDp)
+        {
+            $('#modalHuyDatPhong').modal('show');
+            $('#idMaDp').val(MaDp);
+            $('#xoaDatPhong').click((e) => {
+                $.ajax({
+                    url: '/DatPhong/ConfirmDeleteDatPhong',
+                    type: 'post',
+                    data: {
+                        MaDp: MaDp,
+                    },
+                    success: function(data){
+                        const toastSuccess = document.getElementById('toast-success');
+                        const toastError = document.getElementById('toast-error');
+
+                        if (data == true)
+                        {
+                            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastSuccess);
+                            toastBootstrap.show();
+                            location.reload();
+                        }
+                        else
+                        {
+                            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastSuccess);
+                            toastBootstrap.show();
+                        }
+                    },
+                    error: function(data){
+                        alert(data);
+                    }
+                });
+            });
+        }
+    </script>
+}

@@ -1,0 +1,22 @@
+<li class="nav-item">
+    <div class="d-flex justify-content-between pt-2 pb-2 border-bottom" data-bs-toggle="collapse"
+        data-bs-target="#menu_item1">
+        <a class="nav-link text-secondary" href="#"> <i class="bi bi-building-check text-dark"
+                style="margin-right: 5px;"></i> <strong class="text-darl"> Đặt phòng</strong></a>
+        <i class="bi bi-caret-down-fill text-secondary mt-2" style="cursor: pointer; margin-right: 15px;"></i>
+    </div>
+    <ul id="menu_item1" class="submenu collapse" data-bs-parent="#nav_accordion" style="list-style: none;">
+        <li>
+            @Html.ActionLink("Phòng trống", "DanhSachDatPhong", "DatPhong", null, new {@class = "nav-link text-secondary bi bi-dash"})
+        </li>
+        <li>
+            @Html.ActionLink("Phòng đang sử dụng", "DanhSachPhongDangSuDung", "DatPhong",null, new {@class = "nav-link text-secondary"})
+        </li>
+        <li>
+            @Html.ActionLink("Thay đổi đặt phòng", "ThayDoiDatPhong", "DatPhong",null, new {@class = "nav-link text-secondary"})
+        </li>
+        <li>
+            @Html.ActionLink("Danh sách đặt phòng", "Index", "DatPhong",null, new {@class = "nav-link text-secondary"})
+        </li>
+    </ul>
+</li>

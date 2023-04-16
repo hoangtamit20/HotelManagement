@@ -1,0 +1,82 @@
+@model IEnumerable<QLKSMVC.Models.KhachHangModel>
+
+@{
+    ViewData["Title"] = "Danh sách khách hàng";
+    var dem = 0;
+}
+
+<h1 class="text-center mt-5 mb-3">Danh Sách Khách Hàng</h1>
+<hr>
+
+<table class="table table-align-center align-middle" id="myTable">
+    <thead class="table-info">
+        <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Hình ảnh</th>
+            <th>
+                Họ tên
+            </th>
+            <th>
+                CMND/CCCD
+            </th>
+            <th>
+                Số ĐT
+            </th>
+            <th>
+                Ngày sinh
+            </th>
+            <th>
+                Giới tính
+            </th>
+            <th>
+                Địa chỉ
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr style="height: 80px;">
+            <td>@(++dem)</td>
+            <td style="height: 80px; width: 80px;">
+                <img class="rounded-circle p-0 m-0" width="100%" height="100%" src='~/Images/KhachHang/@(item.HinhAnh == null ? "noimage.jpg" : item.HinhAnh)' alt="Code by TamHoang" srcset="">
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HoTen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cccd)
+            </td>
+            <td>
+                @String.Format("{0:(####) ###-####}", item.SoDt)
+            </td>
+            <td>
+                @(item.NgaySinh.Value.ToString("dd/MM/yyyy"))
+            </td>
+            <td>
+                @(item.GioiTinh.Value == true ? "Nam" : "Nữ")
+            </td>
+            <td class="text-break">
+                @(item.DiaChi)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MaKh">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MaKh">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts{
+    <link rel="stylesheet" href="~/DataTables/datatables.css">
+    <script src="~/DataTables/datatables.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#myTable').dataTable({
+                "aLengthMenu": [[15, 30, 75, -1], [15, 30, 75, "All"]],
+                "iDisplayLength": 15
+            });
+        });
+    </script>
+}

@@ -1,0 +1,61 @@
+@model IEnumerable<QLKSMVC.Models.DatPhongModel>
+
+@{
+    ViewData["Title"] = "Danh sách đặt phòng";
+    var dem = 0;
+}
+
+<h1 class="text-center mt-5 mb-3">Danh sách đặt phòng</h1>
+<button class="btn btn-outline-success mb-2 d-flex justify-content-end" id="btnExportExcel"
+    onclick="fnExcelReport();"><i class="bi bi-file-earmark-excel text-warning"></i> Xuất File Excel</button>
+<hr>
+<table class="table" id="myTable">
+    <thead class="table-info">
+        <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Mã ĐP</th>
+            <th>Khách hàng</th>
+            <th class="text-center">Số phòng</th>
+            <th>Loại phòng </th>
+            <th class="text-center">Số người</th>
+            <th>Ngày BĐ</th>
+            <th>Ngày KT</th>
+            <th>Tiền cọc</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td class="text-center">@(++dem)</td>
+            <td class="text-center">@(item.MaDp)</td>
+            <td>@(item.MaKhNavigation.HoTen)</td>
+            <td>@(item.MaPNavigation.SoPhong)</td>
+            <td>@(item.MaPNavigation.MaLpNavigation.TenLp)</td>
+            <td class="text-center">@(item.SoNguoi)</td>
+            <td>@(item.NgayBatDau.Value)</td>
+            <td>@(item.NgayKetThuc.Value)</td>
+            <td>@(item.TienDatCoc.Value) <small>vnđ</small></td>
+            <td>
+                <a asp-action="ChiTietDangKyDatPhong" class="btn btn-sm btn-outline-primary" asp-route-MaDp="@item.MaDp">Chi tiết</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+@section Scripts{
+    <link rel="stylesheet" href="~/DataTables/datatables.css">
+    <script src="~/DataTables/datatables.js"></script>
+    <script src="~/js/exportExcel.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#myTable').dataTable({
+                "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+                "iDisplayLength": 25
+            });
+        });
+    </script>
+}

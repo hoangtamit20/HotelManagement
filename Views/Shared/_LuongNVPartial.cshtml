@@ -1,0 +1,13 @@
+<li class="nav-item">
+    <div class="d-flex justify-content-between pt-2 pb-2 border-bottom" data-bs-toggle="collapse"
+        data-bs-target="#menu_item5">
+        <a class="nav-link text-secondary" href="#"> <i class="bi bi-wallet2 text-dark"
+                style="margin-right: 5px;"></i> Lương nhân viên</a>
+        <i class="bi bi-caret-down-fill text-secondary mt-2" style="cursor: pointer; margin-right: 15px;"></i>
+    </div>
+    <ul id="menu_item5" class="submenu collapse" data-bs-parent="#nav_accordion" style="list-style: none;">
+        <li>
+            @Html.ActionLink("Lương nhân viên", "Index", "TongLuong", null, new {@class = "nav-link text-secondary"})
+        </li>
+    </ul>
+</li>
